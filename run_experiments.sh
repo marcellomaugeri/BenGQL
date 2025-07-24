@@ -200,8 +200,13 @@ run_single_test() {
         log "[$test_id] Using specific command for tool '$tool_name'."
     # ==================================== EvoMaster =========================================
     elif [ "$tool_name" == "EvoMaster" ]; then
-        tool_command_args="--problemType GRAPHQL --bbTargetUrl {TARGET_URL} --outputFolder {OUTPUT_DIR_PATH} --maxTime {TIME_BUDGET}s --header0 \"{AUTH_HEADER}\" --blackBox true --outputFormat PYTHON_UNITTEST"
-        log "[$test_id] Using specific command for tool '$tool_name'."
+        if [ -n "$auth_header" ]; then
+            tool_command_args="--problemType GRAPHQL --bbTargetUrl {TARGET_URL} --outputFolder {OUTPUT_DIR_PATH} --maxTime {TIME_BUDGET}s --header0 \"{AUTH_HEADER}\" --blackBox true --outputFormat PYTHON_UNITTEST"
+            log "[$test_id] Using specific command for tool '$tool_name'."
+        else
+            tool_command_args="--problemType GRAPHQL --bbTargetUrl {TARGET_URL} --outputFolder {OUTPUT_DIR_PATH} --maxTime {TIME_BUDGET}s --blackBox true --outputFormat PYTHON_UNITTEST"
+            log "[$test_id] Using specific command for tool '$tool_name'."
+        fi
     # ==================================== curl =========================================
     elif [ "$tool_name" == "curl" ]; then
         # Curl tool for making HTTP requests.

@@ -172,3 +172,6 @@ cython_debug/
 
 # .DS_Store filess
 .DS_Store
+
+# Results folder
+results/

@@ -1,7 +1,9 @@
 # BenGQL: An Extensible Benchmarking Framework for Automated GraphQL Testing
 *BenGQL* is a benchmarking framework designed to facilitate the testing and evaluation of GraphQL APIs.
-It provides a collection of case studies, tools, and analysis scripts to help researchers and developers assess the performance and security of GraphQL implementations.
+It provides a collection of *case studies*, *tools*, and *analysis modules* to help researchers and developers assess the performance and security of GraphQL implementations.
 Contributions to this repository are welcome, and we encourage users to add new case studies, tools, and analysis scripts to enhance the framework's capabilities.
+
+![BenGQL Workflow](assets/workflow.jpg)
 
 ## Repository structure
 - `case_studies`: Contains the case studies (Consisting of a Dockerfile and a docker-compose.yml file). See [./docs/CASE_STUDIES.md](./docs/CASE_STUDIES.md) to add new case studies.
