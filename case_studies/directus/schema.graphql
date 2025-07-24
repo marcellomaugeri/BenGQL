@@ -1,0 +1,6 @@
+"Represents NULL values"
+scalar Void
+type Query {
+  "There's no data to query."
+  _empty: Void
+}

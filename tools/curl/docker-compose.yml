@@ -1,0 +1,10 @@
+services: 
+
+  curl:
+    platform: linux/amd64
+    image: alpine/curl:latest
+    entrypoint: ["curl"]
+    volumes:
+      - ../../results:/results
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

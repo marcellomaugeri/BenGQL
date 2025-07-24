@@ -1,0 +1,10 @@
+services: 
+
+  react-finland:
+    platform: linux/amd64
+    image: react-finland
+    build:
+      dockerfile: ./Dockerfile
+    ports:
+      - ":3000"
+    command: npm start

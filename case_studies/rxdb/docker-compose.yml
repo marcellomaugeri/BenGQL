@@ -1,0 +1,18 @@
+
+
+services:
+  rxdb:
+    platform: linux/amd64
+    image: rxdb
+    build:
+      dockerfile: ./Dockerfile
+    healthcheck:
+      test: ["CMD", "curl", "-X", "POST", "http://localhost:3000/graphql",
+        "-H", "Content-Type: application/json",
+        "-d", "'{\"query\":\"{ continent(code: \\\"EU\\\") { code } }\"}'"]
+    ports:
+      - ":3000"
+   
+    environment:
+      - NODE_ENV=development
+    restart: unless-stopped

@@ -1,0 +1,85 @@
+services:
+  zookeeper:
+    platform: linux/amd64
+    image: confluentinc/cp-zookeeper:7.4.0
+    restart: always
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    platform: linux/amd64
+    image: confluentinc/cp-kafka:7.4.0
+    restart: always
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_MESSAGE_MAX_BYTES: 10485760
+      JMX_PORT: 9997
+      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=kafka -Dcom.sun.management.jmxremote.rmi.port=9997
+    healthcheck:
+      test: nc -z localhost 9092 || exit -1
+      start_period: 15s
+      interval: 30s
+      timeout: 10s
+      retries: 10
+
+  db:
+    platform: linux/amd64
+    image: postgres:12
+    restart: always
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "amplication"
+      #JWT_SECRET: "jwt-secret"
+      #SERVICE_JWT_SECRET: "service-jwt-secret"
+      #BCRYPT_SALT_ROUNDS: 10
+
+  redis:
+    platform: linux/amd64
+    image: redis:7-alpine
+    restart: always
+
+  amplication:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: amplication
+    restart: always
+    depends_on:
+      db:
+        condition: service_started
+      redis:
+        condition: service_started
+      kafka:
+        condition: service_healthy
+    ports:
+      - ":3001"
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: "postgres://postgres:password@db:5432/amplication"
+      REDIS_URL: "redis://redis:6379"
+      SENDGRID_API_KEY_SECRET: "dummy"
+      SEGMENT_WRITE_KEY_SECRET: "dummy"
+      KAFKA_ENABLED: "true"
+      KAFKAJS_NO_PARTITIONER_WARNING: "1"
+      KAFKA_BROKERS: "kafka:29092"
+      #PORT: 3000
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f -X POST http://localhost:3001/graphql \
+               -H 'Content-Type: application/json' \
+               -d '{\"query\":\"{ __schema { queryType { name } } }\"}' \
+               || exit 1"]
+      interval: 30s
+      timeout: 30s
+      start_period: 2m
+      retries: 5
+

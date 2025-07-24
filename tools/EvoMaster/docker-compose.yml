@@ -1,0 +1,10 @@
+services: 
+
+  EvoMaster:
+    platform: linux/amd64
+    image: webfuzzing/evomaster:v3.4.0
+    volumes:
+      - ../../results:/results
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: ["--help"]

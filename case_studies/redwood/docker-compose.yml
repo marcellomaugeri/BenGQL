@@ -1,0 +1,16 @@
+services:
+  redwood:
+    platform: linux/amd64
+    image: redwood
+    build:
+      dockerfile: ./Dockerfile
+    healthcheck:
+      test: ["CMD", "curl", "-X", "POST", "http://localhost:8910/graphql",
+        "-H", "Content-Type: application/json",
+        "-d", "'{\"query\":\"{ continent(code: \\\"EU\\\") { code } }\"}'"]
+      interval: 30s
+      start_period: 1m
+      timeout: 10s
+      retries: 3
+    ports:
+      - ":8910"

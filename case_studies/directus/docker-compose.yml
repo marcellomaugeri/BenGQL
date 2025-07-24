@@ -1,0 +1,46 @@
+services:
+  postgres:
+    platform: linux/amd64
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: directus
+      POSTGRES_USER: directus
+      POSTGRES_DB: directus   
+
+  directus:
+    platform: linux/amd64
+    image: directus
+    build: .
+    restart: always 
+    depends_on:
+      - postgres
+    healthcheck:
+      test: >
+        curl -X POST \
+          -H "X-Parse-Application-Id: myAppId" \
+          -H "X-Parse-REST-API-Key: myRestAPIKey" \
+          -H "Content-Type: application/json" \
+          -d '{"query":"{ __typename }"}' \
+          http://localhost:8055/graphql
+      interval: 30s
+      start_period: 1m
+      timeout: 10s
+      retries: 3
+    environment:
+      DB_CLIENT: "pg"
+      DB_HOST: "postgres"
+      DB_PORT: "5432"
+      DB_DATABASE: "directus"
+      DB_USER: "directus"
+      DB_PASSWORD: "directus"
+      
+      ADMIN_EMAIL: "admin@example.com"
+      ADMIN_PASSWORD: "password"
+      
+      KEY: "255d861b-5ea1-5996-9aa3-922530ec40b1"
+      SECRET: "6116487b-cda1-52c2-b5b5-c8022c45e263"
+      
+      GRAPHQL_ENABLED: "true"
+    ports:
+      - ":8055"

@@ -1,0 +1,43 @@
+services: 
+  db:
+    platform: linux/amd64
+    image: postgres:12
+    restart: always
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "amplication"
+      ALLOW_NOSSL: true
+    command: >
+      bash -c "
+        until pg_isready -U postgres; do
+          echo 'waiting for postgres…';
+          sleep 1;
+        done;
+        psql -U postgres -d amplication -c \"CREATE DATABASE \\\"default\\\" WITH OWNER postgres;\";
+        psql -U postgres -d amplication -c \"CREATE DATABASE \\\"test\\\"    WITH OWNER postgres;\";
+        exec postgres
+      "
+      
+
+  redis:
+    platform: linux/amd64
+    image: redis/redis-stack-server:7.2.0-v18
+    restart: always
+
+  twenty:
+    platform: linux/amd64
+    image: twenty
+    build:
+      dockerfile: ./Dockerfile
+    depends_on:
+      db:
+        condition: service_started
+      redis:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-X", "POST", "http://localhost:3000/graphql",
+        "-H", "Content-Type: application/json",
+        "-d", "'{\"query\":\"{ continent(code: \\\"EU\\\") { code } }\"}'"]
+    ports:
+      - ":3000"

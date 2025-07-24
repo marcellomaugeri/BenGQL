@@ -1,0 +1,10 @@
+services: 
+
+  rover:
+    platform: linux/amd64
+    image: worksome/rover:latest
+    entrypoint: ["rover"]
+    volumes:
+      - ../../results:/results
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

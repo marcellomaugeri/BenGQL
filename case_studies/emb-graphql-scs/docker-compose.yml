@@ -1,0 +1,17 @@
+services:
+  emb-graphql-scs:
+    platform: linux/amd64
+    image: emb-graphql-scs
+    build:
+      dockerfile: ./Dockerfile
+    ports:
+      - ":8080"
+    command:  ["java", "-jar", "/target/graphql-scs-sut.jar" ]
+    healthcheck:
+      test: ["CMD", "curl", "-X", "POST", "http://localhost:8080/graphql",
+        "-H", "Content-Type: application/json",
+        "-d", "'{\"query\":\"{ continent(code: \\\"EU\\\") { code } }\"}'"]
+      interval: 30s
+      start_period: 30s
+      timeout: 10s
+      retries: 3

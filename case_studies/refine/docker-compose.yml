@@ -1,0 +1,13 @@
+services:
+    refine:
+        platform: linux/amd64
+        image: refine
+        build:
+            dockerfile: ./Dockerfile
+        healthcheck:
+          test: ["CMD", "curl", "-X", "POST", "http://localhost:8000/graphql",
+            "-H", "Content-Type: application/json",
+            "-d", "'{\"query\":\"{ continent(code: \\\"EU\\\") { code } }\"}'"]
+        ports:
+        - ":8000"
+        command: npm create refine-app@latest my-refine-app

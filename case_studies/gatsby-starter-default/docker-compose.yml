@@ -1,0 +1,19 @@
+# version: '3.8'
+
+services:
+  gatsby-starter-default:
+    platform: linux/amd64
+    image: gatsby-starter-default
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - ":9000"
+    healthcheck:
+      test: ["CMD", "curl", "-X", "POST", "http://localhost:9000/___graphql",
+        "-H", "Content-Type: application/json",
+        "-d", "'{\"query\":\"{ continent(code: \\\"EU\\\") { code } }\"}'"]
+      interval: 30s
+      start_period: 1m
+      timeout: 10s
+      retries: 3

@@ -1,0 +1,116 @@
+services:
+
+  saleor:
+    platform: linux/amd64
+    image: saleor
+    build:
+      context: .
+      dockerfile: Dockerfile
+    healthcheck:
+      test: ["CMD", "curl", "-X", "POST", "http://localhost:8000/graphql",
+        "-H", "Content-Type: application/json",
+        "-d", "'{\"query\":\"{ continent(code: \\\"EU\\\") { code } }\"}'"]
+    
+      interval: 30s
+      start_period: 8m
+      timeout: 3m
+      retries: 3
+    
+    
+    ports:
+      - ":8000"
+    restart: unless-stopped
+    networks:
+      - saleor-backend-tier
+    stdin_open: true
+    tty: true
+    depends_on:
+      - db
+      - redis
+      - jaeger
+   
+    environment:
+      - DASHBOARD_URL=http://localhost:9000/
+      - ALLOWED_HOSTS=localhost,api
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - DATABASE_URL=postgres://saleor:saleor@db/saleor
+      - DEFAULT_FROM_EMAIL=noreply@example.com
+      - EMAIL_URL=smtp://mailpit:1025
+      - SECRET_KEY=changeme
+      - OTEL_SERVICE_NAME=saleor
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317
+      - DEFAULT_CHANNEL_SLUG=default-channel
+      - HTTP_IP_FILTER_ALLOW_LOOPBACK_IPS=True
+      - HTTP_IP_FILTER_ENABLED=True
+    command: sh -c "poetry run python manage.py migrate &&
+             poetry run python manage.py collectstatic --noinput &&
+             poetry run python manage.py populatedb &&
+             poetry run python manage.py runserver 0.0.0.0:8000"  
+
+  dashboard:
+    image: ghcr.io/saleor/saleor-dashboard:latest
+    restart: unless-stopped
+
+  db:
+    platform: linux/amd64
+    image: library/postgres:15-alpine
+    ports:
+      - 5432:5432
+    restart: unless-stopped
+    networks:
+      - saleor-backend-tier
+   
+    environment:
+      - POSTGRES_USER=saleor
+      - POSTGRES_PASSWORD=saleor
+
+  redis:
+    platform: linux/amd64
+    image: library/redis:7.0-alpine
+    restart: unless-stopped
+    networks:
+      - saleor-backend-tier
+
+  worker:
+    platform: linux/amd64
+    image: ghcr.io/saleor/saleor:3.21
+    command: celery -A saleor --app=saleor.celeryconf:app worker --loglevel=info -B
+    restart: unless-stopped
+    networks:
+      - saleor-backend-tier
+    environment:
+      - DASHBOARD_URL=http://localhost:9000/
+      - ALLOWED_HOSTS=localhost,api
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - DATABASE_URL=postgres://saleor:saleor@db/saleor
+      - DEFAULT_FROM_EMAIL=noreply@example.com
+      - EMAIL_URL=smtp://mailpit:1025
+      - SECRET_KEY=changeme
+      - OTEL_SERVICE_NAME=saleor
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317
+      - DEFAULT_CHANNEL_SLUG=default-channel
+      - HTTP_IP_FILTER_ALLOW_LOOPBACK_IPS=True
+      - HTTP_IP_FILTER_ENABLED=True
+    depends_on:
+      - redis
+      - mailpit
+    
+  jaeger:
+    platform: linux/amd64
+    image: jaegertracing/jaeger
+    restart: unless-stopped
+    networks:
+      - saleor-backend-tier
+   
+  mailpit:
+    platform: linux/amd64
+    image: axllent/mailpit
+    restart: unless-stopped
+    networks:
+      - saleor-backend-tier
+
+networks:
+  saleor-backend-tier:
+    driver: bridge

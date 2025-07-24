@@ -1,0 +1,16 @@
+services:
+  mongo:
+    platform: linux/amd64
+    image: mongo:7.0.20
+    container_name: rick-and-morty-api_mongo
+    
+  rick-and-morty-api:
+    platform: linux/amd64
+    image: rick-and-morty-api
+    build:
+      dockerfile: ./Dockerfile
+    ports:
+      - ":8080"
+    command: npm start
+    depends_on:
+      - mongo

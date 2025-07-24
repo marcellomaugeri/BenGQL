@@ -1,0 +1,87 @@
+services:
+    postgres:
+        platform: linux/amd64
+        image: postgres:15
+        restart: always
+        networks:
+          - redis-network
+        environment:
+            POSTGRES_PASSWORD: hey_password
+            POSTGRES_USER: hey_user
+            POSTGRES_DB: hey_production
+
+    hey:
+        platform: linux/amd64
+        build:
+            dockerfile: ./Dockerfile
+        image: hey
+        restart: always  
+        healthcheck:
+           test: ["CMD", "curl", "-X", "POST", "http://localhost:4784/graphql",
+            "-H", "Content-Type: application/json",
+            "-d", "'{\"query\":\"{ continent(code: \\\"EU\\\") { code } }\"}'"]
+           interval: 30s
+           start_period: 1m
+           timeout: 1m
+           retries: 3
+ 
+        environment:
+            DB_HOST: postgres
+            DB_PORT: 5432
+            DB_NAME: hey_production
+            DB_USER: hey_user
+            DB_PASSWORD: hey_password
+            DB_SSL: require
+            PRIVATE_KEY: 0x313f45ba4aa9786ff5c206050374ade989152bde1414b80f0021445f91034e29
+            NEXT_PUBLIC_LENS_API_URL: https://api-v2.lens.dev
+            NEXT_PUBLIC_LENS_HUB_ADDRESS: 0x313f45ba4aa9786ff5c206050374ade989152bde1414b80f0021445f91034e29
+            NEXT_PUBLIC_LENS_PERIPHERY_ADDRESS: 0x313f45ba4aa9786ff5c206050374ade989152bde1414b80f0021445f91034e29
+            NEXT_PUBLIC_LENS_PROFILE_ID: 0x313f45ba4aa9786ff5c206050374ade989152bde1414b80f0021445f91034e29
+            NEXT_PUBLIC_LENS_FOLLOW_NFT_ADDRESS: 0x313f45ba4aa9786ff5c206050374ade989152bde1414b80f0021445f91034e29
+            NEXT_PUBLIC_LENS_COLLECT_NFT_ADDRESS: 0x313f45ba4aa9786ff5c206050374ade989152bde1414b80f0021445f91034e29
+            NEXT_PUBLIC_LENS_FOLLOW_MODULE: 0x313f45ba4aa9786ff5c206050374ade989152bde1414b80f0021445f91034e29
+            NEXT_PUBLIC_LENS_COLLECT_MODULE: 0x313f45ba4aa9786ff5c206050374ade989152bde1414b80f0021445f91034e29
+            NEXT_PUBLIC_LENS_DISPATCHER_ADDRESS: 0x313f45ba4aa9786ff5c206050374ade989152bde1414b80f0021445f91034e29
+            NEXT_PUBLIC_LENS_DEFAULT_PROFILE_PICTURE: https://lens-profiles.s3.amazonaws.com/default-profile-picture.png
+            NEXT_PUBLIC_LENS_DEFAULT_PROFILE_PICTURE_CID: QmX...
+            NEXT_PUBLIC_LENS_DEFAULT_PROFILE_PICTURE_URL: https://lens-profiles.s3.amazonaws.com/default-profile-picture.png
+            NEXT_PUBLIC_LENS_DEFAULT_PROFILE_PICTURE_URL_CID: QmX...
+            NEXT_PUBLIC_LENS_DEFAULT_PROFILE_PICTURE_URL_IPFS: https://lens-profiles.s3.amazonaws.com/default-profile-picture.png
+            NEXT_PUBLIC_LENS_DEFAULT_PROFILE_PICTURE_URL_IPFS_CID: QmX...   
+            NEXT_PUBLIC_LENS_NETWORK: mainnet
+            NEXT_PUBLIC_LENS_API_KEY: your_lens_api_key
+            NEXT_PUBLIC_LENS_API_SECRET: your_lens_api_secret          
+                        
+            NEXT_PUBLIC_ALCHEMY_API_KEY: your_alchemy_key
+            NEXT_PUBLIC_INFURA_PROJECT_ID: your_infura_id
+            NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID: your_walletconnect_id
+            
+            
+            NEXT_PUBLIC_APP_URL: http://localhost:8000
+            NEXT_PUBLIC_API_URL: http://localhost:8000/api
+            
+            VITE_IS_PRODUCTION: true
+            NODE_ENV: production 
+            NEXTAUTH_SECRET: your_secret_key
+            NEXTAUTH_URL: http://localhost:3000
+    
+            REDIS_URL: redis://redis:6379         
+
+        ports:
+            - ":4784"
+        networks:
+          - redis-network
+        depends_on:
+            - postgres
+            - redis
+        command: ["pnpm", "start"]
+
+    redis:
+        platform: linux/amd64
+        image: redis:alpine
+        networks:
+            - redis-network
+
+networks:  
+  redis-network:
+    driver: bridge   

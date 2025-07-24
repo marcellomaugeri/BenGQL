@@ -1,0 +1,25 @@
+services: 
+  petclinic_graphql_db:
+    platform: linux/amd64
+    image: postgres:16.1-alpine
+    command: ["postgres", "-c", "log_statement=all"]
+    container_name: petclinic_graphql_db
+    environment:
+      - POSTGRES_PASSWORD=secretpw
+      - POSTGRES_USER=klaus
+      - POSTGRES_DB=petclinic_graphql_db
+      - POSTGRES_INITDB_ARGS=--locale-provider=icu --icu-locale=en
+  petclinic-graphql:
+    platform: linux/amd64
+    image: petclinic-graphql
+    depends_on:
+      - petclinic_graphql_db
+    build:
+      dockerfile: ./Dockerfile
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://petclinic_graphql_db:5432/petclinic_graphql_db
+      - SPRING_DATASOURCE_USERNAME=klaus
+      - SPRING_DATASOURCE_PASSWORD=secretpw
+    ports:
+      - ":9977"
+    command: java -jar backend/target/backend-0.0.1-SNAPSHOT.jar

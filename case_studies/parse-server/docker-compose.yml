@@ -1,0 +1,32 @@
+services:
+  parse-server:
+    platform: linux/amd64
+    build:
+      dockerfile: ./Dockerfile
+    image: parse-server
+    ports:
+      - ":1337"
+    environment:
+      PARSE_SERVER_APPLICATION_ID: myAppId
+      PARSE_SERVER_MASTER_KEY: myMasterKey
+      PARSE_SERVER_DATABASE_URI: mongodb://mongo:27017/dev
+      PARSE_SERVER_URL: http://localhost:1337/parse
+    command: >
+      --appId $$PARSE_SERVER_APPLICATION_ID
+      --masterKey $$PARSE_SERVER_MASTER_KEY
+      --databaseURI $$PARSE_SERVER_DATABASE_URI
+      --mountGraphQL
+      --mountPlayground
+
+    healthcheck:
+      test: ["CMD-SHELL",
+         "curl -f -X POST http://localhost:1337/graphql \
+           -H 'Content-Type: application/json' \
+           -H 'X-Parse-Application-Id: myAppId' \
+           -d '{\"query\":\"{ __schema { queryType { name } } }\"}' \
+           || exit 1"
+      ]
+      interval: 10s
+      timeout: 5s
+      start_period: 30s
+      retries: 5
