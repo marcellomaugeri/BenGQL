@@ -225,6 +225,20 @@ run_single_test() {
         # If no auth header is provided, we use the default command without it.
         tool_command_args="graph introspect {TARGET_URL} --output {OUTPUT_DIR_PATH}/schema.graphql"
     fi
+    # ==================================== graphql-cop =========================================
+    elif [ "$tool_name" == "graphql-cop" ]; then
+        # GraphQL Cop tool for security analysis.
+        if [ -n "$auth_header" ]; then
+            # GraphQL Cop expects the auth header to be passed in a json format. So we split it into key-value pairs.
+            # e.g. '"Authorization": "Bearer <token>"' we split it into '{"Authorization": "Bearer <token>"}'
+            # This is a workaround to pass the header correctly.
+            auth_header="$(echo "$auth_header" | sed -E 's/^([^:]+): (.+)$/{"\1": "\2"}/')"
+            tool_command_args="--target {TARGET_URL} --header \"{AUTH_HEADER}\""
+        else
+            tool_command_args="--target {TARGET_URL}"
+        fi
+        log "[$test_id] Using specific command for tool '$tool_name'."
+
     # Add elif blocks for other tools with specific command structures
     # elif [ "$tool_name" == "AnotherTool" ]; then
     #    tool_command_args="--input {TARGET_URL} --out-dir {OUTPUT_DIR_PATH}"
@@ -255,12 +269,12 @@ run_single_test() {
         echo "❌ (Tool Fail)" > "$result_file"
     else
         log "[$test_id] Tool '$tool_name' completed for case study '$case_study_name'."
-        # Truncate tool_log_file to 100 lines if it exceeds that length
+        # Truncate tool_log_file to 1000 lines if it exceeds that length
         if [ -f "$tool_log_file" ]; then
             log_file_lines=$(wc -l < "$tool_log_file")
-            if [ "$log_file_lines" -gt 100 ]; then
-                log "[$test_id] Tool log file '$tool_log_file' has more than 100 lines. Truncating to the last 100 lines."
-                tail -n 100 "$tool_log_file" > "${tool_log_file}.tmp" && mv "${tool_log_file}.tmp" "$tool_log_file"
+            if [ "$log_file_lines" -gt 1000 ]; then
+                log "[$test_id] Tool log file '$tool_log_file' has more than 1000 lines. Truncating to the last 1000 lines."
+                tail -n 1000 "$tool_log_file" > "${tool_log_file}.tmp" && mv "${tool_log_file}.tmp" "$tool_log_file"
             fi
         fi
         echo "✅" > "$result_file" # Mark success based on tool exit code

@@ -41,6 +41,16 @@ Contributions to this repository are welcome, and we encourage users to add new 
 | [amplication](https://github.com/amplication/amplication) | nestjs/apollo | ✅ |
 | [dvga](https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application) | Apollo | ✅ |
 
+## Tools
+| Tool | Description | Integration status |
+| ---- | ----------- | ------------------ |
+| [EvoMaster](https://github.com/WebFuzzing/EvoMaster) | A web fuzzing tool for automated test generation and execution | ✅ (Black-box mode only) |
+| [Apollo Rover CLI](https://github.com/apollographql/rover) | A command-line tool for schema introspection | ✅ |
+| [graphw00f](https://github.com/dolevf/graphw00f) | Server Engine fingerprinting | ❌ (Coming soon) |
+| [graphql-cop](https://github.com/dolevf/graphql-cop) | A tool for GraphQL security analysis | ✅ |
+
+
+
 ## Requirements
 - Docker
 - Docker Compose

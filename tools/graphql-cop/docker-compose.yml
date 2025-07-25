@@ -1,0 +1,12 @@
+services: 
+
+  graphql-cop:
+    platform: linux/amd64
+    image: graphql-cop
+    build:
+      dockerfile: ./Dockerfile
+    volumes:
+      - ../../results:/results
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: ["--help"]
