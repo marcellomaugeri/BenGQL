@@ -253,6 +253,17 @@ run_single_test() {
             tool_command_args="--target {TARGET_URL}"
         fi
         log "[$test_id] Using specific command for tool '$tool_name'."
+    # ==================================== GraphQLer =========================================
+    elif [ "$tool_name" == "GraphQLer" ]; then
+        # GraphQLer tool for schema introspection.
+        if [ -n "$auth_header" ]; then
+            # GraphQLer expects only the token part of the header, so we extract it. E.g. "Authorization : Bearer <token>" becomes just "Bearer <token>"
+            auth_header="$(echo "$auth_header" | sed -E 's/^Authorization: (.+)$/\1/')"
+            tool_command_args="--mode run --url {TARGET_URL} --path {OUTPUT_DIR_PATH} --auth {AUTH_HEADER}"
+        else
+            tool_command_args="--mode run --url {TARGET_URL} --path {OUTPUT_DIR_PATH}"
+        fi
+        log "[$test_id] Using specific command for tool '$tool_name'."
 
     # Add elif blocks for other tools with specific command structures
     # elif [ "$tool_name" == "AnotherTool" ]; then

@@ -1,0 +1,10 @@
+services: 
+
+  GraphQLer:
+    platform: linux/amd64
+    image: omar2535/graphqler:latest
+    volumes:
+      - ../../results:/results
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: ["--help"]
