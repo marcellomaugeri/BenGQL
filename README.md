@@ -16,7 +16,7 @@ Contributions to this repository are welcome, and we encourage users to add new 
 
 | Project | Framework | Integration status |
 | ------- | --------- | ------------------ |
-| [CatalysisHubBackend](https://github.com/SUNCAT-Center/CatalysisHubBackend) | Flask-GraphQL | ✅ |
+| [CatalysisHubBackend](https://github.com/SUNCAT-Center/CatalysisHubBackend) | Flask-GraphQL | ❌ |
 | [countries](https://github.com/trevorblades/countries) | Yoga | ✅ |
 | [ehri-rest](https://github.com/EHRI/ehri-rest) | GraphQL Java | ❌ |
 | [fruits-api](https://github.com/Franqsanz/fruits-api) | Apollo | ❌ |
@@ -35,7 +35,7 @@ Contributions to this repository are welcome, and we encourage users to add new 
 | [directus](https://github.com/directus/directus) | graphql-ws | ✅ |
 | [hey](https://github.com/heyverse/hey) | graphql-codegen | ✅ |
 | [rxdb](https://github.com/pubkey/rxdb) | express-graphql | ✅ |
-| [saleor](https://github.com/saleor/saleor) | Graphene | ✅ |
+| [saleor](https://github.com/saleor/saleor) | Graphene | ❌ |
 | [parse-server](https://github.com/parse-community/parse-server) | Apollo | ✅ |
 | [redwoodjs-graphql](https://github.com/redwoodjs/graphql) | Yoga | ✅ |
 | [amplication](https://github.com/amplication/amplication) | nestjs/apollo | ✅ |

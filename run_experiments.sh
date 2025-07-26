@@ -139,9 +139,24 @@ run_single_test() {
     # Default result to failure, overwrite on success
     echo "❌ (Setup)" > "$result_file"
 
+    # Save the tool's output log file path
+    local cs_log_file="../..${tool_output_dir_container_path}/_${case_study_name}.log"
+
     # 1. Start Case Study
     log "[$test_id] Starting case study '$case_study_name' which will be targeted by tool '$tool_name'."
-    if ! (cd "$case_study_dir" && docker compose -p "$case_study_project_name" up -d --wait --remove-orphans > /dev/null 2>&1); then # -p sets the project name (format: [experiment name]_[case study name]_[tool name]), -d runs in detached mode, --wait waits for the service to be healthy
+
+    # Run the case study, tee output, and capture the exit code of the cs (not tee)
+    (cd "$case_study_dir" && docker compose -p "$case_study_project_name" up -d --wait --remove-orphans | tee "$cs_log_file" > /dev/null)
+    case_study_exit_code=${PIPESTATUS[0]}
+    # Truncate cs_log_file to 50 lines if it exceeds that length
+    if [ -f "$cs_log_file" ]; then
+        log_file_lines=$(wc -l < "$cs_log_file")
+        if [ "$log_file_lines" -gt 50 ]; then
+            tail -n 50 "$cs_log_file" > "${cs_log_file}.tmp" && mv "${cs_log_file}.tmp" "$cs_log_file"
+        fi
+    fi
+
+    if [ $case_study_exit_code -ne 0 ]; then
         # If the case study fails to start, we log the error and clean up.
         log "[$test_id] ERROR: Failed to start case study '$case_study_name'."
         echo "❌ (Case Study Start)" > "$result_file"
@@ -233,7 +248,7 @@ run_single_test() {
             # e.g. '"Authorization": "Bearer <token>"' we split it into '{"Authorization": "Bearer <token>"}'
             # This is a workaround to pass the header correctly.
             auth_header="$(echo "$auth_header" | sed -E 's/^([^:]+): (.+)$/{"\1": "\2"}/')"
-            tool_command_args="--target {TARGET_URL} --header \"{AUTH_HEADER}\""
+            tool_command_args="--target {TARGET_URL} --header {AUTH_HEADER}"
         else
             tool_command_args="--target {TARGET_URL}"
         fi
@@ -260,7 +275,7 @@ run_single_test() {
 
     local tool_log_file="../..${tool_output_dir_container_path}/_${tool_name}.log"
     
-    # Run the tool, tee output, and capture the exit code of the tool (not tee)
+    # Run the tool, tee output, and capture the exit code of the tool
     (cd "$tool_dir" && docker compose -p "$tool_project_name" run -T --rm "$tool_name" $tool_command_args | tee "$tool_log_file" > /dev/null)
     tool_exit_code=${PIPESTATUS[0]}
 

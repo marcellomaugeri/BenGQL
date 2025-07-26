@@ -10,20 +10,15 @@ services:
       test: ["CMD", "curl", "-X", "POST", "http://localhost:8000/graphql",
         "-H", "Content-Type: application/json",
         "-d", "'{\"query\":\"{ continent(code: \\\"EU\\\") { code } }\"}'"]
-    
       interval: 30s
       start_period: 8m
       timeout: 3m
       retries: 3
-    
-    
     ports:
       - ":8000"
     restart: unless-stopped
     networks:
       - saleor-backend-tier
-    stdin_open: true
-    tty: true
     depends_on:
       - db
       - redis
@@ -49,14 +44,13 @@ services:
              poetry run python manage.py runserver 0.0.0.0:8000"  
 
   dashboard:
+    platform: linux/amd64
     image: ghcr.io/saleor/saleor-dashboard:latest
     restart: unless-stopped
 
   db:
     platform: linux/amd64
     image: library/postgres:15-alpine
-    ports:
-      - 5432:5432
     restart: unless-stopped
     networks:
       - saleor-backend-tier

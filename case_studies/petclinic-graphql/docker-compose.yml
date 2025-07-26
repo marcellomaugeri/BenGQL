@@ -23,3 +23,11 @@ services:
     ports:
       - ":9977"
     command: java -jar backend/target/backend-0.0.1-SNAPSHOT.jar
+    healthcheck:
+      test: ["CMD", "curl", "-X", "POST", "http://localhost:9977/graphql",
+        "-H", "Content-Type: application/json",
+        "-d", "'{\"query\":\"{ pet(id: \\\"1\\\") { id } }\"}'"]
+      interval: 30s
+      start_period: 1m
+      timeout: 10s
+      retries: 3

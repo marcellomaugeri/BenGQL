@@ -11,6 +11,15 @@ services:
       dockerfile: ./Dockerfile
     ports:
       - ":8080"
-    command: npm start
+    command: sh -c "npm run test:mock && npm start"
     depends_on:
       - mongo
+    healthcheck:
+      test: [
+        "CMD", "curl", "-X", "POST", "http://localhost:8080/graphql",
+        "-H", "content-type: application/json",
+        "--data-raw", "{\"operationName\":null,\"variables\":{},\"query\":\"{ characters { results { id } } }\"}"
+      ]
+      interval: 30s
+      start_period: 10s
+      timeout: 10s

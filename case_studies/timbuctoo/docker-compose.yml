@@ -14,6 +14,7 @@ services:
       indexer_timbuctoo_login_endpoint: "http://timbuctoo/v2.1/authenticate"
       timbuctoo_user: ""
       timbuctoo_password: ""
+
   timbuctoo:
     platform: linux/amd64
     image: huygensing/timbuctoo
@@ -25,4 +26,10 @@ services:
       JAVA_OPTS: ${JAVA_OPTS}
     ports:
       - :80
-      - :81
+    healthcheck:
+      test: ["CMD", "curl", "-X", "POST", "http://localhost/graphql",
+        "-H", "Content-Type: application/json",
+        "-d", "'{\"query\":\"{ datasets { id } }\"}'"]
+      interval: 30s
+      start_period: 1m
+      timeout: 10s
