@@ -16,30 +16,30 @@ Contributions to this repository are welcome, and we encourage users to add new 
 
 | Project | Framework | Integration status |
 | ------- | --------- | ------------------ |
-| [CatalysisHubBackend](https://github.com/SUNCAT-Center/CatalysisHubBackend) | Flask-GraphQL | ❌ |
+| [amplication](https://github.com/amplication/amplication) | nestjs/apollo | ✅ |
+| [catalysis-hub](https://github.com/SUNCAT-Center/CatalysisHubBackend) | Flask-GraphQL | ❌ |
 | [countries](https://github.com/trevorblades/countries) | Yoga | ✅ |
+| [directus](https://github.com/directus/directus) | graphql-ws | ✅ |
+| [dvga](https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application) | Apollo | ✅ |
+| [emb-graphql-ncs](https://github.com/WebFuzzing/EMB/) | graphql-java-tools | ✅ |
+| [emb-graphql-scs](https://github.com/WebFuzzing/EMB/) | graphql-java-tools | ✅ |
 | [ehri-rest](https://github.com/EHRI/ehri-rest) | GraphQL Java | ❌ |
 | [fruits-api](https://github.com/Franqsanz/fruits-api) | Apollo | ❌ |
-| [Gitlab-CE](https://docs.gitlab.com/install/docker/) | GraphQL Ruby | ✅ |
-| [sierra](https://github.com/hivdb/sierra) | GraphQL Java | ❌ |
+| [gatsby-starter-default](https://github.com/gatsbyjs/gatsby) | graphql-js | ✅ |
+| [gitlab-ce](https://docs.gitlab.com/install/docker/) | GraphQL Ruby | ⚠️ (Healthcheck and auth missing) |
+| [hey](https://github.com/heyverse/hey) | graphql-codegen | ✅ |
+| [parse-server](https://github.com/parse-community/parse-server) | Apollo | ✅ |
+| [payload](https://github.com/payloadcms/payload) | graphql-js | ❌ |
 | [rick-and-morty-api](https://github.com/afuh/rick-and-morty-api) | apollo-server-express | ✅ |
 | [react-ecommerce](https://github.com/react-shop/react-ecommerce) | Nestjs-GraphQL | ✅ |
-| [graphql-ncs](https://github.com/WebFuzzing/EMB/) | graphql-java-tools | ✅ |
-| [graphql-scs](https://github.com/WebFuzzing/EMB/) | graphql-java-tools | ✅ |
-| [spring-petclinic-graphql](https://github.com/spring-petclinic/spring-petclinic-graphql) | Spring for GraphQL | ✅ |
-| [ReactFinland](https://github.com/ReactFinland/graphql-api) | express‑graphql | ✅ |
-| [timbuctoo](https://github.com/HuygensING/timbuctoo) | GraphQL-Java | ✅ |
-| [Gatsby](https://github.com/gatsbyjs/gatsby) | graphql-js | ✅ |
-| [payload](https://github.com/payloadcms/payload) | graphql-js | ❌ |
-| [twenty](https://github.com/twentyhq/twenty/) | nestjs/apollo | ✅ |
-| [directus](https://github.com/directus/directus) | graphql-ws | ✅ |
-| [hey](https://github.com/heyverse/hey) | graphql-codegen | ✅ |
+| [react-finland](https://github.com/ReactFinland/graphql-api) | express‑graphql | ✅ |
+| [redwoodjs-graphql](https://github.com/redwoodjs/graphql) | Yoga | ✅ |
 | [rxdb](https://github.com/pubkey/rxdb) | express-graphql | ✅ |
 | [saleor](https://github.com/saleor/saleor) | Graphene | ❌ |
-| [parse-server](https://github.com/parse-community/parse-server) | Apollo | ✅ |
-| [redwoodjs-graphql](https://github.com/redwoodjs/graphql) | Yoga | ✅ |
-| [amplication](https://github.com/amplication/amplication) | nestjs/apollo | ✅ |
-| [dvga](https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application) | Apollo | ✅ |
+| [sierra](https://github.com/hivdb/sierra) | GraphQL Java | ❌ |
+| [spring-petclinic-graphql](https://github.com/spring-petclinic/spring-petclinic-graphql) | Spring for GraphQL | ✅ |
+| [timbuctoo](https://github.com/HuygensING/timbuctoo) | GraphQL-Java | ✅ |
+| [twenty](https://github.com/twentyhq/twenty/) | nestjs/apollo | ✅ |
 
 ## Tools
 | Tool | Description | Integration status |

@@ -8,3 +8,12 @@ services:
     ports:
       - ":3000"
     command: npm start
+    healthcheck:
+      test: [
+        "CMD", "curl", "-X", "POST", "http://localhost:3000/graphql",
+        "-H", "content-type: application/json",
+        "--data-raw", "{\"query\":\"{ allSeries { results } }\"}"
+      ]
+      interval: 30s
+      start_period: 10s
+      timeout: 10s

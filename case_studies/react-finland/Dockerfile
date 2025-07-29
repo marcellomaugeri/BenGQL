@@ -3,7 +3,7 @@ FROM node:21-alpine
 ENV NODE_ENV=development
 
 # Install dependencies
-RUN apk add git
+RUN apk add git curl
 
 # Clone the repo and checkout the specific commit
 RUN git clone https://github.com/ReactFinland/graphql-api.git
