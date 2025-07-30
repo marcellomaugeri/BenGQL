@@ -10,10 +10,11 @@ RUN git clone https://github.com/react-shop/react-ecommerce.git
 WORKDIR /react-ecommerce
 RUN git checkout bc0f268e6d38806910e6d1c198460a0c3fdd81d1
 
-# Install dependencies
-RUN yarn
+# Install dependencies in packages/server
 WORKDIR /react-ecommerce/packages/server
-#RUN npm install
+RUN yarn
 
-# Run the server
-#CMD ["yarn", "start"]
+# Go back to the root directory
+WORKDIR /react-ecommerce
+
+CMD ["yarn", "server:dev"]

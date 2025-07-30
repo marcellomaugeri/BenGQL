@@ -6,8 +6,6 @@ services:
       POSTGRES_DB: react-ecommerce
       POSTGRES_USER: react-ecommerce
       POSTGRES_PASSWORD: react-ecommerce
-    networks:
-      - react-ecommerce-network
 
   react-ecommerce:
     platform: linux/amd64
@@ -22,11 +20,15 @@ services:
       DATABASE_USER : "react-ecommerce"
       DATABASE_PASSWORD : "react-ecommerce"
       DATABASE_NAME : "react-ecommerce"
-    networks:
-      - react-ecommerce-network
     ports:
       - ":3000"
-    command: tail -f /dev/null
-networks:
-  react-ecommerce-network:
-    driver: bridge
+    healthcheck:
+      test: [
+        "CMD", "curl", "-X", "POST", "http://localhost:3000/graphql",
+        "-H", "content-type: application/json",
+        "--data-raw", "{\"query\":\"{ getAllProducts { title } }\"}"
+      ]
+      interval: 30s
+      start_period: 10s
+      timeout: 10s
+
