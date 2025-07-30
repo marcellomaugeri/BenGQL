@@ -4,7 +4,7 @@ services:
     image: gitlab/gitlab-ce:17.11.0-ce.0
     hostname: 'gitlab.example.com'
     environment:
-      GITLAB_ROOT_PASSWORD: 'gitlab_password'
+      GITLAB_ROOT_PASSWORD: '3jAR8hK9c3cj'
     #  GITLAB_OMNIBUS_CONFIG: |
     #    # Add any other gitlab.rb configuration here, each on its own line
     #    #external_url 'https://gitlab.example.com'

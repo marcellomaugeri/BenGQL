@@ -2,7 +2,7 @@
 set -euo pipefail
 
 USERNAME="root"
-PASSWORD="gitlab_password"
+PASSWORD="3jAR8hK9c3cj"
 
 # Perform the “login” call and extract the private_token
 # Note: the /session endpoint returns JSON with .private_token :contentReference[oaicite:0]{index=0}

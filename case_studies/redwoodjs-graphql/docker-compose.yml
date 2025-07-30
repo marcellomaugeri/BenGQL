@@ -1,5 +1,5 @@
 services:
-  redwood:
+  redwoodjs-graphql:
     platform: linux/amd64
     image: redwood
     build:

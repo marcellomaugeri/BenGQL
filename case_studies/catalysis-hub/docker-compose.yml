@@ -1,0 +1,17 @@
+services:
+  catalysis-hub:
+    platform: linux/amd64
+    image: catalysis-hub
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - ":5432"
+    healthcheck:
+      test: ["CMD", "curl", "-X", "POST", "http://localhost:5432/graphql",
+        "-H", "Content-Type: application/json",
+        "-d", "'{\"query\":\"{ reactions { totalCount } }\"}'"]
+      interval: 30s
+      start_period: 1m
+      timeout: 10s
+      retries: 3
