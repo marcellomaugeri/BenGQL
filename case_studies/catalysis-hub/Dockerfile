@@ -13,4 +13,7 @@ RUN git checkout 5d46106d28fd80049e925db082cdabdfc48e5e05
 # Install Python dependencies
 RUN pip install -r requirements_no_deps.txt --no-deps
 
-CMD [ "gunicorn", "app:app", "--preload", "--threads", "3" ]
+# Fix the db host in the main.py file
+RUN sed -i 's/localhost/postgres/' app.py
+
+CMD [ "gunicorn", "app:app", "--preload", "--threads", "3", "--bind", "0.0.0.0:8000" ]

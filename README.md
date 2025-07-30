@@ -17,7 +17,7 @@ Contributions to this repository are welcome, and we encourage users to add new 
 | Project | Framework | Integration status |
 | ------- | --------- | ------------------ |
 | [amplication](https://github.com/amplication/amplication) | nestjs/apollo | ✅ |
-| [catalysis-hub](https://github.com/SUNCAT-Center/CatalysisHubBackend) | Flask-GraphQL | ⚠️ (To test) |
+| [catalysis-hub](https://github.com/SUNCAT-Center/CatalysisHubBackend) | Flask-GraphQL | ✅ |
 | [countries](https://github.com/trevorblades/countries) | Yoga | ✅ |
 | [directus](https://github.com/directus/directus) | graphql-ws | ✅ |
 | [dvga](https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application) | Apollo | ✅ |

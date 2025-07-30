@@ -1,4 +1,22 @@
 services:
+  postgres:
+    platform: linux/amd64
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: travis_ci_test
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 30s
+      start_period: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - ./pg_sample_data.sql:/docker-entrypoint-initdb.d/dump.sql:ro
+
+
   catalysis-hub:
     platform: linux/amd64
     image: catalysis-hub
@@ -6,9 +24,12 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - ":5432"
+      - ":8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-X", "POST", "http://localhost:5432/graphql",
+      test: ["CMD", "curl", "-X", "POST", "http://localhost:8000/graphql",
         "-H", "Content-Type: application/json",
         "-d", "'{\"query\":\"{ reactions { totalCount } }\"}'"]
       interval: 30s
