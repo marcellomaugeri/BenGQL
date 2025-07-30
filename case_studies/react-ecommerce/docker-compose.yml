@@ -20,11 +20,12 @@ services:
       DATABASE_USER : "react-ecommerce"
       DATABASE_PASSWORD : "react-ecommerce"
       DATABASE_NAME : "react-ecommerce"
+      SECRET: "react-ecommerce-secret"
     ports:
-      - ":3000"
+      - ":5000"
     healthcheck:
       test: [
-        "CMD", "curl", "-X", "POST", "http://localhost:3000/graphql",
+        "CMD", "curl", "-X", "POST", "http://localhost:5000/graphql",
         "-H", "content-type: application/json",
         "--data-raw", "{\"query\":\"{ getAllProducts { title } }\"}"
       ]

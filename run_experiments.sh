@@ -189,8 +189,8 @@ run_single_test() {
     local target_url="http://host.docker.internal:${case_study_port}${case_study_endpoint_path}"
     log "[$test_id] Case study target URL: $target_url"
 
-    # Export the target URL to use it in the auth.sh script if needed
-    export CASE_STUDY_ENDPOINT="$case_study_endpoint_path"
+    # Export the url for the auth script
+    export CASE_STUDY_ENDPOINT="http://localhost:${case_study_port}${case_study_endpoint_path}"
 
     # Here we check if the case study has an authentication header script. If yes, we execute it to get the header.
     local auth_script_path="${case_study_dir}/auth.sh"
@@ -239,11 +239,14 @@ run_single_test() {
     # ==================================== Rover =========================================
     elif [ "$tool_name" == "rover" ]; then
         # Rover tool for GraphQL schema introspection.
-    if [ -n "$auth_header" ]; then
-        tool_command_args="graph introspect {TARGET_URL} --output {OUTPUT_DIR_PATH}/schema.graphql --header {AUTH_HEADER}"
-    else
-        # If no auth header is provided, we use the default command without it.
-        tool_command_args="graph introspect {TARGET_URL} --output {OUTPUT_DIR_PATH}/schema.graphql"
+        if [ -n "$auth_header" ]; then
+            # Rover expects a key:value format, so if there is a space between Authorization: and Bearer, we need to remove it.
+            # Also, if there is a space between Bearer and the token, we need to escape it
+            auth_header="$(echo "$auth_header" | sed -E 's#^Authorization:[[:space:]]*Bearer[[:space:]]*(.+)$#Authorization:Bearer \1#')"
+            tool_command_args="graph introspect -H \"{AUTH_HEADER}\" --output {OUTPUT_DIR_PATH}/schema.graphql {TARGET_URL}"
+        else
+            # If no auth header is provided, we use the default command without it.
+            tool_command_args="graph introspect {TARGET_URL} --output {OUTPUT_DIR_PATH}/schema.graphql"
     fi
     # ==================================== graphql-cop =========================================
     elif [ "$tool_name" == "graphql-cop" ]; then
@@ -286,13 +289,16 @@ run_single_test() {
     tool_command_args="${tool_command_args//\{AUTH_HEADER\}/$auth_header}"
     tool_command_args="${tool_command_args//\{TIME_BUDGET\}/$TIME_BUDGET}"
 
-    log "[$test_id] Running tool '$tool_name' for case study '$case_study_name' with service '$tool_name' and args: $tool_command_args"
+    # Convert the single string into an array, honoring any embedded quotes:
+    eval "tool_args_array=( $tool_command_args )"
+
+    log "[$test_id] Running tool '$tool_name' for case study '$case_study_name' with service '$tool_name' and args: ${tool_args_array[*]}"
     # Tee redirects the tool's output to a log file in the results directory. The path is relative to the host.
 
     local tool_log_file="../..${tool_output_dir_container_path}/_${tool_name}.log"
     
     # Run the tool, tee output, and capture the exit code of the tool
-    (cd "$tool_dir" && docker compose -p "$tool_project_name" run -T --rm "$tool_name" $tool_command_args | tee "$tool_log_file" > /dev/null)
+    (cd "$tool_dir" && docker compose -p "$tool_project_name" run -T --rm "$tool_name" "${tool_args_array[@]}" | tee "$tool_log_file" > /dev/null)
     tool_exit_code=${PIPESTATUS[0]}
 
     if [ $tool_exit_code -ne 0 ]; then

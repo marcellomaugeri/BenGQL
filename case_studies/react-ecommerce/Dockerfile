@@ -17,4 +17,4 @@ RUN yarn
 # Go back to the root directory
 WORKDIR /react-ecommerce
 
-CMD ["yarn", "server:dev"]
+CMD ["yarn", "server:dev", "--", "--stream", "--loglevel", "verbose"]
