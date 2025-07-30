@@ -1,0 +1,16 @@
+services:
+  ehri-rest:
+    platform: linux/amd64
+    image: ehri-rest
+    build:
+      dockerfile: ./Dockerfile
+    ports:
+      - ":7474"
+    healthcheck:
+      test: ["CMD", "curl", "-X", "POST", "http://localhost:7474/ehri/graphql",
+        "-H", "Content-Type: application/json",
+        "-d", "'{\"query\":\"{ Repository(id: \\\"us-005578\\\") { name } }\"}'"]
+      interval: 30s
+      start_period: 10m
+      timeout: 10s
+      retries: 3

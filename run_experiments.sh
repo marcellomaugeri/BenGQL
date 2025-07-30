@@ -189,6 +189,9 @@ run_single_test() {
     local target_url="http://host.docker.internal:${case_study_port}${case_study_endpoint_path}"
     log "[$test_id] Case study target URL: $target_url"
 
+    # Export the target URL to use it in the auth.sh script if needed
+    export CASE_STUDY_ENDPOINT="$case_study_endpoint_path"
+
     # Here we check if the case study has an authentication header script. If yes, we execute it to get the header.
     local auth_script_path="${case_study_dir}/auth.sh"
     local auth_header
@@ -203,6 +206,8 @@ run_single_test() {
         fi
         log "[$test_id] Authentication header for case study '$case_study_name': $auth_header"
     fi
+
+    unset CASE_STUDY_ENDPOINT # Unset the variable to avoid conflicts in the tool execution
 
     # 3. Run Tool
     local tool_command_args # This will hold the arguments part of the command

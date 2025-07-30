@@ -23,10 +23,10 @@ Contributions to this repository are welcome, and we encourage users to add new 
 | [dvga](https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application) | Apollo | ✅ |
 | [emb-graphql-ncs](https://github.com/WebFuzzing/EMB/) | graphql-java-tools | ✅ |
 | [emb-graphql-scs](https://github.com/WebFuzzing/EMB/) | graphql-java-tools | ✅ |
-| [ehri-rest](https://github.com/EHRI/ehri-rest) | GraphQL Java | ❌ |
+| [ehri-rest](https://github.com/EHRI/ehri-rest) | GraphQL Java | ✅ |
 | [fruits-api](https://github.com/Franqsanz/fruits-api) | Apollo | ❌ |
 | [gatsby-starter-default](https://github.com/gatsbyjs/gatsby) | graphql-js | ✅ |
-| [gitlab-ce](https://docs.gitlab.com/install/docker/) | GraphQL Ruby | ⚠️ (Healthcheck and auth missing) |
+| [gitlab-ce](https://docs.gitlab.com/install/docker/) | GraphQL Ruby | ⚠️ (Healthcheck and auth to test) |
 | [hey](https://github.com/heyverse/hey) | graphql-codegen | ✅ |
 | [parse-server](https://github.com/parse-community/parse-server) | Apollo | ✅ |
 | [payload](https://github.com/payloadcms/payload) | graphql-js | ❌ |
@@ -76,4 +76,5 @@ The command below runs an experiment named `my_experiment` with the `EvoMaster` 
 
 ## Known Issues
 - The `countries` case study on MacOS (ARM) sometimes fails to compile (qemu: uncaught target signal 11 (Segmentation fault) - core dumped). If this happens, just try to compile the container again and will work like a charm.
+- The `ehri-rest` case study sometimes fails to start due to getting stuck during the initialisation (A successful run should show twice the following in the log: `SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".`). If this happens, please restart.
 - Docker networks can be filled with unused containers, which can cause issues with the `docker-compose up` command. If you encounter issues, try running `docker network prune` to clean up unused networks.

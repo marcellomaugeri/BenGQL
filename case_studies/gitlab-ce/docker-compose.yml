@@ -3,7 +3,8 @@ services:
     platform: linux/amd64
     image: gitlab/gitlab-ce:17.11.0-ce.0
     hostname: 'gitlab.example.com'
-    #environment:
+    environment:
+      GITLAB_ROOT_PASSWORD: 'gitlab_password'
     #  GITLAB_OMNIBUS_CONFIG: |
     #    # Add any other gitlab.rb configuration here, each on its own line
     #    #external_url 'https://gitlab.example.com'
@@ -16,3 +17,9 @@ services:
 #      - '$GITLAB_HOME/logs:/var/log/gitlab'
 #      - '$GITLAB_HOME/data:/var/opt/gitlab'
     shm_size: '512m'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/api/graphql"]
+      interval: 30s
+      start_period: 5m
+      timeout: 10s
+      retries: 3
