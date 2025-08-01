@@ -26,7 +26,7 @@ Contributions to this repository are welcome, and we encourage users to add new 
 | [ehri-rest](https://github.com/EHRI/ehri-rest) | GraphQL Java | ✅ |
 | [fruits-api](https://github.com/Franqsanz/fruits-api) | Apollo | ✅ |
 | [gatsby-starter-default](https://github.com/gatsbyjs/gatsby) | graphql-js | ✅ |
-| [gitlab-ce](https://docs.gitlab.com/install/docker/) | GraphQL Ruby | ⚠️ (Healthcheck and auth to test) |
+| [gitlab-ce](https://docs.gitlab.com/install/docker/) | GraphQL Ruby | ✅ |
 | [hey](https://github.com/heyverse/hey) | graphql-codegen | ✅ |
 | [parse-server](https://github.com/parse-community/parse-server) | Apollo | ✅ |
 | [payload](https://github.com/payloadcms/payload) | graphql-js | ❌ |
