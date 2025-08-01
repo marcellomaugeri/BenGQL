@@ -1,0 +1,19 @@
+services:
+    
+  fruits-api:
+    platform: linux/amd64
+    image: fruits-api
+    build:
+      dockerfile: ./Dockerfile
+    ports:
+      - ":9000"
+    command: sh -c "npm run start"
+    healthcheck:
+      test: [
+        "CMD", "curl", "-X", "POST", "http://localhost:9000/graphql",
+        "-H", "content-type: application/json",
+        "--data-raw", "{\"operationName\":null,\"variables\":{},\"query\":\"{ allFruits { Fruits { scientific_name } } }\"}"
+      ]
+      interval: 30s
+      start_period: 10s
+      timeout: 10s

@@ -24,7 +24,7 @@ Contributions to this repository are welcome, and we encourage users to add new 
 | [emb-graphql-ncs](https://github.com/WebFuzzing/EMB/) | graphql-java-tools | ✅ |
 | [emb-graphql-scs](https://github.com/WebFuzzing/EMB/) | graphql-java-tools | ✅ |
 | [ehri-rest](https://github.com/EHRI/ehri-rest) | GraphQL Java | ✅ |
-| [fruits-api](https://github.com/Franqsanz/fruits-api) | Apollo | ❌ |
+| [fruits-api](https://github.com/Franqsanz/fruits-api) | Apollo | ✅ |
 | [gatsby-starter-default](https://github.com/gatsbyjs/gatsby) | graphql-js | ✅ |
 | [gitlab-ce](https://docs.gitlab.com/install/docker/) | GraphQL Ruby | ⚠️ (Healthcheck and auth to test) |
 | [hey](https://github.com/heyverse/hey) | graphql-codegen | ✅ |
