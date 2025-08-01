@@ -18,8 +18,8 @@ services:
 #      - '$GITLAB_HOME/data:/var/opt/gitlab'
     shm_size: '512m'
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/api/graphql"]
+      test: ["CMD-SHELL", "curl -s -f http://localhost/users/sign_in && curl -s -f http://localhost/api/graphql"] # Check if the login page is available and the GraphQL API responds
       interval: 30s
-      start_period: 15m
+      start_period: 10m
       timeout: 10s
       retries: 3
