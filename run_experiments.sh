@@ -172,7 +172,7 @@ run_single_test() {
     log "[$test_id] Attempting to get exposed host port for service '$case_study_name' in project '$case_study_project_name'."
 
     # Get port mapping(s) for the service.
-    case_study_port=$(docker ps --filter "label=com.docker.compose.project=$case_study_project_name" --filter "label=com.docker.compose.service=$case_study_name" --format "{{.Ports}}" 2>/dev/null | cut -d',' -f1 | sed -n 's/.*:\([0-9]*\)->.*/\1/p')
+    case_study_port=$(docker ps --filter "label=com.docker.compose.project=$case_study_project_name" --filter "label=com.docker.compose.service=$case_study_name" --format "{{.Ports}}" 2>/dev/null | sed -n 's/.*:\([0-9]*\)->.*/\1/p')
 
 
     if [ -z "$case_study_port" ] || ! [[ "$case_study_port" =~ ^[0-9]+$ ]]; then
@@ -189,8 +189,13 @@ run_single_test() {
     local target_url="http://host.docker.internal:${case_study_port}${case_study_endpoint_path}"
     log "[$test_id] Case study target URL: $target_url"
 
-    # Export the url for the auth script
-    export CASE_STUDY_ENDPOINT="http://localhost:${case_study_port}${case_study_endpoint_path}"
+    # Export CASE_STUDY_ENDPOINT for the auth script (note that it runs locally, not in the container)
+    # By default, authentication scripts starts from the root path, but some case studies may have a different endpoint.
+    export CASE_STUDY_ENDPOINT="http://localhost:${case_study_port}"
+    # Some others could run on the graphql path, so we check a list of case studies (for now just react-ecommerce)
+    if [[ "$case_study_name" == "react-ecommerce" || "$case_study_name" == "ADD-HERE-OTHER-CASE-STUDIES" ]]; then
+        export CASE_STUDY_ENDPOINT="http://localhost:${case_study_port}${case_study_endpoint_path}"
+    fi
 
     # Here we check if the case study has an authentication header script. If yes, we execute it to get the header.
     local auth_script_path="${case_study_dir}/auth.sh"
@@ -198,7 +203,8 @@ run_single_test() {
     if [ -f "$auth_script_path" ]; then
         log "[$test_id] Found authentication script for case study '$case_study_name'. Executing to get auth header."
         auth_header=$(bash "$auth_script_path" 2>/dev/null)
-        if [ -z "$auth_header" ]; then
+        # The check should check not only if its empty, but, if it starts with "Authorization:" or "Cookie: ", they must be followed by something not empty.
+        if [ -z "$auth_header" ] || ! [[ "$auth_header" =~ ^(Authorization:|Cookie:)[[:space:]]+.+ ]]; then
             log "[$test_id] ERROR: Authentication script for case study '$case_study_name' returned an empty header."
             echo "❌ (Case Study: Auth Error)" > "$result_file"
             (cd "$case_study_dir" && docker compose -p "$case_study_project_name" down -v --remove-orphans &>/dev/null) || true
