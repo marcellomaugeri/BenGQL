@@ -1,0 +1,12 @@
+services: 
+
+  clairvoyance-next:
+    platform: linux/amd64
+    image: clairvoyance-next
+    build:
+      dockerfile: ./Dockerfile
+    command: poetry run clairvoyance --help
+    volumes:
+      - ../../results:/results
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

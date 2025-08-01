@@ -201,11 +201,16 @@ run_single_test() {
     local auth_script_path="${case_study_dir}/auth.sh"
     local auth_header
     if [ -f "$auth_script_path" ]; then
-        log "[$test_id] Found authentication script for case study '$case_study_name'. Executing to get auth header."
+        log "[$test_id] Found authentication script for case study '$case_study_name'. Executing to get auth header on the endpoint: $CASE_STUDY_ENDPOINT"
         auth_header=$(bash "$auth_script_path" 2>/dev/null)
-        # The check should check not only if its empty, but, if it starts with "Authorization:" or "Cookie: ", they must be followed by something not empty.
-        if [ -z "$auth_header" ] || ! [[ "$auth_header" =~ ^(Authorization:|Cookie:)[[:space:]]+.+ ]]; then
-            log "[$test_id] ERROR: Authentication script for case study '$case_study_name' returned an empty header."
+        # Fail if:
+        # 1. auth_header starts with "Authorization:" or "Cookie:" but lacks a header-value
+        # 2. auth_header doesn't start with those prefixes and is empty
+        if { [[ "$auth_header" =~ ^(Authorization:|Cookie:) ]] \
+        && ! [[ "$auth_header" =~ ^(Authorization:|Cookie:)[[:space:]]+.+ ]] ; } \
+        || { ! [[ "$auth_header" =~ ^(Authorization:|Cookie:) ]] \
+        && [ -z "$auth_header" ] ; }; then
+            log "[$test_id] ERROR: Authentication script for case study '$case_study_name' returned an empty header: '$auth_header'."
             echo "❌ (Case Study: Auth Error)" > "$result_file"
             (cd "$case_study_dir" && docker compose -p "$case_study_project_name" down -v --remove-orphans &>/dev/null) || true
             return 1
@@ -267,6 +272,15 @@ run_single_test() {
             tool_command_args="--target {TARGET_URL}"
         fi
         log "[$test_id] Using specific command for tool '$tool_name'."
+    # ==================================== graphqlw00f =========================================
+    elif [ "$tool_name" == "graphqlw00f" ]; then
+        if [ -n "$auth_header" ]; then
+            tool_command_args="-d -f --target {TARGET_URL} -H {AUTH_HEADER}"
+        else
+            tool_command_args="-d -f --target {TARGET_URL}"
+        fi
+        log "[$test_id] Using specific command for tool '$tool_name'."
+
     # ==================================== GraphQLer =========================================
     elif [ "$tool_name" == "GraphQLer" ]; then
         # GraphQLer tool for schema introspection.
