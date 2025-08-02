@@ -4,7 +4,7 @@ FROM python:3.12-slim
 RUN apt-get update && apt-get install -y git
 
 # Download the repository
-RUN git clone git clone https://github.com/dolevf/graphw00f.git
+RUN git clone https://github.com/dolevf/graphw00f.git
 
 # Set the working directory
 WORKDIR /graphw00f

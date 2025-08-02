@@ -275,7 +275,7 @@ run_single_test() {
     # ==================================== graphw00f =========================================
     elif [ "$tool_name" == "graphw00f" ]; then
         if [ -n "$auth_header" ]; then
-            tool_command_args="-d -f --target {TARGET_URL} -o {OUTPUT_DIR_PATH}/graphw00f.csv -H {AUTH_HEADER}"
+            tool_command_args="-d -f --target {TARGET_URL} -o {OUTPUT_DIR_PATH}/graphw00f.csv -H \"{AUTH_HEADER}\""
         else
             tool_command_args="-d -f --target {TARGET_URL} -o {OUTPUT_DIR_PATH}/graphw00f.csv"
         fi
