@@ -9,11 +9,11 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-X", "POST", "http://localhost:8000/graphql",
         "-H", "Content-Type: application/json",
-        "-d", "'{\"query\":\"{ continent(code: \\\"EU\\\") { code } }\"}'"]
-      interval: 30s
-      start_period: 8m
-      timeout: 3m
-      retries: 3
+        "-d", "'{\"query\":\"{ me { id } }\"}'"]
+      interval: 1m
+      start_period: 25m
+      timeout: 20s
+      retries: 5
     ports:
       - ":8000"
     restart: unless-stopped
@@ -43,18 +43,12 @@ services:
              poetry run python manage.py populatedb &&
              poetry run python manage.py runserver 0.0.0.0:8000"  
 
-  dashboard:
-    platform: linux/amd64
-    image: ghcr.io/saleor/saleor-dashboard:latest
-    restart: unless-stopped
-
   db:
     platform: linux/amd64
     image: library/postgres:15-alpine
     restart: unless-stopped
     networks:
       - saleor-backend-tier
-   
     environment:
       - POSTGRES_USER=saleor
       - POSTGRES_PASSWORD=saleor
