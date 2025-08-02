@@ -1,0 +1,17 @@
+services:
+  
+  sierra:
+    platform: linux/amd64
+    image: hivdb/sierra:20250715222624
+    ports:
+      - ":8080"
+    command: dev
+    healthcheck:
+      test: [
+        "CMD", "curl", "-X", "POST", "http://localhost:8080/sierra/rest/graphql",
+        "-H", "content-type: application/json",
+        "--data-raw", "{\"query\":\"{ currentVersion }\"}"
+      ]
+      interval: 30s
+      start_period: 10s
+      timeout: 10s

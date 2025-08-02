@@ -36,7 +36,7 @@ Contributions to this repository are welcome, and we encourage users to add new 
 | [redwoodjs-graphql](https://github.com/redwoodjs/graphql) | Yoga | ✅ |
 | [rxdb](https://github.com/pubkey/rxdb) | express-graphql | ✅ |
 | [saleor](https://github.com/saleor/saleor) | Graphene | ❌ |
-| [sierra](https://github.com/hivdb/sierra) | GraphQL Java | ❌ |
+| [sierra](https://github.com/hivdb/sierra) | GraphQL Java | ✅ |
 | [spring-petclinic-graphql](https://github.com/spring-petclinic/spring-petclinic-graphql) | Spring for GraphQL | ✅ |
 | [timbuctoo](https://github.com/HuygensING/timbuctoo) | GraphQL-Java | ✅ |
 | [twenty](https://github.com/twentyhq/twenty/) | nestjs/apollo | ✅ |
