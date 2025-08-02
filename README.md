@@ -29,7 +29,7 @@ Contributions to this repository are welcome, and we encourage users to add new 
 | [gitlab-ce](https://docs.gitlab.com/install/docker/) | GraphQL Ruby | ✅ |
 | [hey](https://github.com/heyverse/hey) | graphql-codegen | ✅ |
 | [parse-server](https://github.com/parse-community/parse-server) | Apollo | ✅ |
-| [payload](https://github.com/payloadcms/payload) | graphql-js | ❌ |
+| [payload](https://github.com/payloadcms/payload) | graphql-js | ✅ |
 | [rick-and-morty-api](https://github.com/afuh/rick-and-morty-api) | apollo-server-express | ✅ |
 | [react-ecommerce](https://github.com/react-shop/react-ecommerce) | Nestjs-GraphQL | ✅ |
 | [react-finland](https://github.com/ReactFinland/graphql-api) | express‑graphql | ✅ |

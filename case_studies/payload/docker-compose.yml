@@ -1,0 +1,33 @@
+services:
+  mongo:
+    platform: linux/amd64
+    image: mongo:7.0.20
+    container_name: mongodb
+  payload:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: payload
+    restart: always
+    command: "pnpm dev"
+    ports:
+      - ":3000"
+    environment:
+      - DATABASE_URI=mongodb://mongodb/db
+      - PAYLOAD_SECRET=SECRET
+      - NEXT_PUBLIC_SERVER_URL=http://localhost:3000
+      - CRON_SECRET=CRON_SECRET
+      - PREVIEW_SECRET=PREVIEW_SECRET
+    depends_on:
+      - mongo
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f -X POST http://localhost:3000/api/graphql \
+               -H 'Content-Type: application/json' \
+               -d '{\"query\":\"{ __schema { queryType { name } } }\"}' \
+               || exit 1"]
+      interval: 30s
+      timeout: 30s
+      start_period: 5m
+      retries: 5
+
