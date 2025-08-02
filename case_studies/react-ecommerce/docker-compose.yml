@@ -30,6 +30,6 @@ services:
         "--data-raw", "{\"query\":\"{ getAllProducts { title } }\"}"
       ]
       interval: 30s
-      start_period: 10s
+      start_period: 2m
       timeout: 10s
 
