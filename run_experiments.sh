@@ -272,12 +272,12 @@ run_single_test() {
             tool_command_args="--target {TARGET_URL}"
         fi
         log "[$test_id] Using specific command for tool '$tool_name'."
-    # ==================================== graphqlw00f =========================================
-    elif [ "$tool_name" == "graphqlw00f" ]; then
+    # ==================================== graphw00f =========================================
+    elif [ "$tool_name" == "graphw00f" ]; then
         if [ -n "$auth_header" ]; then
-            tool_command_args="-d -f --target {TARGET_URL} -H {AUTH_HEADER}"
+            tool_command_args="-d -f --target {TARGET_URL} -o {OUTPUT_DIR_PATH}/graphw00f.csv -H {AUTH_HEADER}"
         else
-            tool_command_args="-d -f --target {TARGET_URL}"
+            tool_command_args="-d -f --target {TARGET_URL} -o {OUTPUT_DIR_PATH}/graphw00f.csv"
         fi
         log "[$test_id] Using specific command for tool '$tool_name'."
 

@@ -1,8 +1,8 @@
 services: 
 
-  graphqlw00f:
+  graphw00f:
     platform: linux/amd64
-    image: graphqlw00f
+    image: graphw00f
     build:
       dockerfile: ./Dockerfile
     volumes:
