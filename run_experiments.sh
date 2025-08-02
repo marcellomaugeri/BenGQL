@@ -283,12 +283,51 @@ run_single_test() {
 
     # ==================================== GraphQLer =========================================
     elif [ "$tool_name" == "GraphQLer" ]; then
-        # GraphQLer tool for schema introspection.
+        # If a time budget is set, we append it to GRAPHQLER_CONFIG as MAX_TIME = <time_budget>
+        if [ -n "$TIME_BUDGET" ]; then
+            # Check if the MAX_TIME line exists already, if it does, we replace it, otherwise we append it
+            if grep -q "^MAX_TIME\s*=" <<< "$GRAPHQLER_CONFIG"; then
+                GRAPHQLER_CONFIG="$(echo -e "$GRAPHQLER_CONFIG" | sed -E "s/^MAX_TIME\s*=.*/MAX_TIME = ${TIME_BUDGET}/")"
+            else
+                GRAPHQLER_CONFIG="${GRAPHQLER_CONFIG}\nMAX_TIME = ${TIME_BUDGET}"
+            fi
+        fi
+
         if [ -n "$auth_header" ]; then
             # GraphQLer expects only the token part of the header, so we extract it. E.g. "Authorization : Bearer <token>" becomes just "Bearer <token>"
-            auth_header="$(echo "$auth_header" | sed -E 's/^Authorization: (.+)$/\1/')"
+            if [[ "$auth_header" =~ ^Authorization:\s* ]]; then
+                # Extract the token part from the Authorization header
+                auth_header="$(echo "$auth_header" | sed -E 's/^Authorization: (.+)$/\1/')"
+            else
+                # If the header does not contain Authorization, we assume it's a custom header which must be appended to the GraphQLer config file in this way:
+                # [CUSTOM_HEADERS]
+                # Cookie = remember_user_token=...
+                # So if we have something like "x: value", we need to format it as "x = value" and append it to the GraphQLer config file.
+                auth_header="$(echo "$auth_header" | sed -E 's/^([^:]+):[[:space:]]*(.+)$/\1 = "\2"/')"
+                # We check if the [CUSTOM_HEADERS] section exists in the GraphQLer config file. If it does not, we add it at the end.
+                # IMPORTANT: The CUSTOM_HEADERS section MUST be at the end of the config file
+                if ! grep -q "\[CUSTOM_HEADERS\]" <<< "$GRAPHQLER_CONFIG"; then
+                    GRAPHQLER_CONFIG="${GRAPHQLER_CONFIG}\n[CUSTOM_HEADERS]\n${auth_header}"
+                else
+                    GRAPHQLER_CONFIG="$(echo -e "$GRAPHQLER_CONFIG" | sed -E "s/\[CUSTOM_HEADERS\]/\[CUSTOM_HEADERS\]\n${auth_header}/")"
+                fi
+                # In any case, let's set auth_header to empty string now
+                auth_header=""
+            fi
+        fi
+
+        # Now, let's build the command arguments for GraphQLer
+        # First, let's build the command for when both the auth header and the GRAPHQLER_CONFIG are provided -> so --auth for the authentication, but there is still a config file to use
+        if [ -n "$auth_header" ] && [ -n "$GRAPHQLER_CONFIG" ]; then
+            tool_command_args="--mode run --url {TARGET_URL} --path {OUTPUT_DIR_PATH} --auth {AUTH_HEADER} --config {GRAPHQLER_CONFIG_PATH}"
+        elif [ -n "$auth_header" ]; then
+            # If only the auth header is provided, we use it as the authentication method
             tool_command_args="--mode run --url {TARGET_URL} --path {OUTPUT_DIR_PATH} --auth {AUTH_HEADER}"
+        elif [ -n "$GRAPHQLER_CONFIG" ]; then
+            # If only the config file is provided, we use it as the configuration file
+            tool_command_args="--mode run --url {TARGET_URL} --path {OUTPUT_DIR_PATH} --config {GRAPHQLER_CONFIG_PATH}"
         else
+            # If neither is provided, we just run the tool with the target URL and output path
             tool_command_args="--mode run --url {TARGET_URL} --path {OUTPUT_DIR_PATH}"
         fi
         log "[$test_id] Using specific command for tool '$tool_name'."
@@ -309,13 +348,23 @@ run_single_test() {
     tool_command_args="${tool_command_args//\{AUTH_HEADER\}/$auth_header}"
     tool_command_args="${tool_command_args//\{TIME_BUDGET\}/$TIME_BUDGET}"
 
+    # Tee redirects the tool's output to a log file in the results directory. The path is relative to the host.
+
+    local tool_log_file="../..${tool_output_dir_container_path}/_${tool_name}.log"
+
+    # GraphQLer only! If the config file is provided (GRAPHQLER_CONFIG is set), we need to copy the content to a file inside the tool_output_dir_container_path called graphqler-config.toml and pass it into the GRAPHQLER_CONFIG_PATH variable
+    if [ -n "$GRAPHQLER_CONFIG" ]; then
+        # Create the config file inside the tool's output directory
+        echo -e "$GRAPHQLER_CONFIG" > "${RESULTS_DIR}/${current_exp_name}/${tool_name}/${case_study_name}/graphqler-config.toml"
+        log "[$test_id] GraphQLer config file created at: ${RESULTS_DIR}/${current_exp_name}/${tool_name}/${case_study_name}/graphqler-config.toml"
+        # Replace the placeholder GRAPHQLER_CONFIG_PATH in the tool_args_array with the actual path to the config file
+        tool_command_args="${tool_command_args//\{GRAPHQLER_CONFIG_PATH\}//results/${current_exp_name}/${tool_name}/${case_study_name}/graphqler-config.toml}"
+    fi
+
     # Convert the single string into an array, honoring any embedded quotes:
     eval "tool_args_array=( $tool_command_args )"
 
     log "[$test_id] Running tool '$tool_name' for case study '$case_study_name' with service '$tool_name' and args: ${tool_args_array[*]}"
-    # Tee redirects the tool's output to a log file in the results directory. The path is relative to the host.
-
-    local tool_log_file="../..${tool_output_dir_container_path}/_${tool_name}.log"
     
     # Run the tool, tee output, and capture the exit code of the tool
     (cd "$tool_dir" && docker compose -p "$tool_project_name" run -T --rm "$tool_name" "${tool_args_array[@]}" | tee "$tool_log_file" > /dev/null)

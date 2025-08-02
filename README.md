@@ -48,7 +48,7 @@ Contributions to this repository are welcome, and we encourage users to add new 
 | [Apollo Rover CLI](https://github.com/apollographql/rover) | A command-line tool for schema introspection | ✅ |
 | [graphw00f](https://github.com/dolevf/graphw00f) | Server Engine fingerprinting | ✅ |
 | [graphql-cop](https://github.com/dolevf/graphql-cop) | A tool for GraphQL security analysis | ✅ |
-| [GraphQLer](https://github.com/omar2535/GraphQLer) | A cutting edge context aware GraphQL API fuzzing tool | ⚠️ (No support for time budget yet) |
+| [GraphQLer](https://github.com/omar2535/GraphQLer) | A cutting edge context aware GraphQL API fuzzing tool | ✅ |
 | [clairvoyance](https://github.com/dolevf/clairvoyance) | A tool for schema retrieval when introspection is not enabled | ✅ |
 | [Clairvoyance-Next](https://github.com/Escape-Technologies/ClairvoyanceNext) | A fork of Clairvoyance to enable concurrency, resulting in faster retrieval | ✅ |
 
