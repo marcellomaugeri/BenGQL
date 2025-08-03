@@ -146,7 +146,7 @@ run_single_test() {
     log "[$test_id] Starting case study '$case_study_name' which will be targeted by tool '$tool_name'."
 
     # Run the case study, tee output, and capture the exit code of the cs (not tee)
-    (cd "$case_study_dir" && docker compose -p "$case_study_project_name" up -d --wait --remove-orphans | tee "$cs_log_file" > /dev/null)
+    (cd "$case_study_dir" && docker compose -p "$case_study_project_name" up -d --wait --remove-orphans 2>&1 | tee "$cs_log_file" > /dev/null)
     case_study_exit_code=${PIPESTATUS[0]}
     # Truncate cs_log_file to 50 lines if it exceeds that length
     if [ -f "$cs_log_file" ]; then
@@ -366,8 +366,8 @@ run_single_test() {
 
     log "[$test_id] Running tool '$tool_name' for case study '$case_study_name' with service '$tool_name' and args: ${tool_args_array[*]}"
     
-    # Run the tool, tee output, and capture the exit code of the tool
-    (cd "$tool_dir" && docker compose -p "$tool_project_name" run -T --rm "$tool_name" "${tool_args_array[@]}" | tee "$tool_log_file" > /dev/null)
+    # Run the tool, tee output (including stderr), and capture the exit code of the tool
+    (cd "$tool_dir" && docker compose -p "$tool_project_name" run -T --rm "$tool_name" "${tool_args_array[@]}" 2>&1 | tee "$tool_log_file" > /dev/null)
     tool_exit_code=${PIPESTATUS[0]}
 
     if [ $tool_exit_code -ne 0 ]; then
