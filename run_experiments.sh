@@ -227,7 +227,7 @@ run_single_test() {
     # {TARGET_URL}, {OUTPUT_DIR_PATH}, {AUTH_HEADER}, {TIME_BUDGET} are available placeholders and will be replaced later.
     # ==================================== clairvoyance / Clairvoyance-Next =========================================
     if [ "$tool_name" == "clairvoyance" ] || [ "$tool_name" == "Clairvoyance-Next" ]; then
-        tool_command_args="poetry run clairvoyance {TARGET_URL} -o {OUTPUT_DIR_PATH}/schema.json"
+        tool_command_args="{TARGET_URL} -o {OUTPUT_DIR_PATH}/schema.json"
         log "[$test_id] Using specific command for tool '$tool_name'."
     # ==================================== EvoMaster =========================================
     elif [ "$tool_name" == "EvoMaster" ]; then

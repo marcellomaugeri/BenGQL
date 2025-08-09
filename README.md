@@ -30,6 +30,7 @@ Contributions to this repository are welcome, and we encourage users to add new 
 | [hey](https://github.com/heyverse/hey) | graphql-codegen | ✅ |
 | [parse-server](https://github.com/parse-community/parse-server) | Apollo | ✅ |
 | [payload](https://github.com/payloadcms/payload) | graphql-js | ✅ |
+| [petclinic-graphql](https://github.com/spring-petclinic/spring-petclinic-graphql) | Spring for GraphQL | ✅ |
 | [rick-and-morty-api](https://github.com/afuh/rick-and-morty-api) | apollo-server-express | ✅ |
 | [react-ecommerce](https://github.com/react-shop/react-ecommerce) | Nestjs-GraphQL | ✅ |
 | [react-finland](https://github.com/ReactFinland/graphql-api) | express‑graphql | ✅ |
@@ -37,7 +38,6 @@ Contributions to this repository are welcome, and we encourage users to add new 
 | [rxdb](https://github.com/pubkey/rxdb) | express-graphql | ✅ |
 | [saleor](https://github.com/saleor/saleor) | Graphene | ✅ |
 | [sierra](https://github.com/hivdb/sierra) | GraphQL Java | ✅ |
-| [spring-petclinic-graphql](https://github.com/spring-petclinic/spring-petclinic-graphql) | Spring for GraphQL | ✅ |
 | [timbuctoo](https://github.com/HuygensING/timbuctoo) | GraphQL-Java | ✅ |
 | [twenty](https://github.com/twentyhq/twenty/) | nestjs/apollo | ✅ |
 
