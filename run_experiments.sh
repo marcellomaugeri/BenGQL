@@ -172,7 +172,7 @@ run_single_test() {
     log "[$test_id] Attempting to get exposed host port for service '$case_study_name' in project '$case_study_project_name'."
 
     # Get port mapping(s) for the service.
-    case_study_port=$(docker ps --filter "label=com.docker.compose.project=$case_study_project_name" --filter "label=com.docker.compose.service=$case_study_name" --format "{{.Ports}}" 2>/dev/null | sed -n 's/.*:\([0-9]*\)->.*/\1/p')
+    case_study_port=$(docker ps --filter "label=com.docker.compose.project=$case_study_project_name" --filter "label=com.docker.compose.service=$case_study_name" --format "{{.Ports}}" 2>/dev/null | awk -F, '{print $1}' | sed -E 's/.*:([0-9]+)->.*/\1/')
 
 
     if [ -z "$case_study_port" ] || ! [[ "$case_study_port" =~ ^[0-9]+$ ]]; then
@@ -224,10 +224,22 @@ run_single_test() {
     local tool_command_args # This will hold the arguments part of the command
 
     # Define tool command arguments based on tool_name
-    # {TARGET_URL}, {OUTPUT_DIR_PATH}, {AUTH_HEADER}, {TIME_BUDGET} are available placeholders and will be replaced later.
-    # ==================================== clairvoyance / Clairvoyance-Next =========================================
-    if [ "$tool_name" == "clairvoyance" ] || [ "$tool_name" == "Clairvoyance-Next" ]; then
-        tool_command_args="{TARGET_URL} -o {OUTPUT_DIR_PATH}/schema.json"
+    # {TARGET_URL}, {OUTPUT_DIR_PATH}, {AUTH_HEADER}, {TIME_BUDGET} are availabl placeholders and will be replaced later.
+    # ==================================== clairvoyance / Clairvoyance-Next  ==========================================
+    if [ "$tool_name" == "clairvoyance" ] || [ "$tool_name" == "Clairvoyance-Next" ] || [ "$tool_name" == "clairvoyanceplus" ]; then
+        if [ -n "$auth_header" ]; then
+            tool_command_args="{TARGET_URL} -o {OUTPUT_DIR_PATH}/schema.gql -ol {OUTPUT_DIR_PATH}/clairvoyance.log --header \"{AUTH_HEADER}\" -w wordlists/100k/overallWordlist-100k.txt"
+        else
+            tool_command_args="{TARGET_URL} -o {OUTPUT_DIR_PATH}/schema.gql -ol {OUTPUT_DIR_PATH}/clairvoyance.log -w wordlists/100k/overallWordlist-100k.txt"
+        fi
+        log "[$test_id] Using specific command for tool '$tool_name'."
+    # ====================================  KrakQL ==========================================
+    elif [ "$tool_name" == "KrakQL" ]; then
+        if [ -n "$auth_header" ]; then
+            tool_command_args="{TARGET_URL} -o {OUTPUT_DIR_PATH}/schema.gql -ol {OUTPUT_DIR_PATH}/krakql.log --header \"{AUTH_HEADER}\" -t {TIME_BUDGET}"
+        else
+            tool_command_args="{TARGET_URL} -o {OUTPUT_DIR_PATH}/schema.gql -ol {OUTPUT_DIR_PATH}/krakql.log -t {TIME_BUDGET}"
+        fi
         log "[$test_id] Using specific command for tool '$tool_name'."
     # ==================================== EvoMaster =========================================
     elif [ "$tool_name" == "EvoMaster" ]; then
@@ -241,7 +253,6 @@ run_single_test() {
     # ==================================== curl =========================================
     elif [ "$tool_name" == "curl" ]; then
         # Curl tool for making HTTP requests.
-# Curl tool for making HTTP requests.
     if [ -n "$auth_header" ]; then
         tool_command_args="-X POST {TARGET_URL} -H \"Content-Type: application/json\" -H \"{AUTH_HEADER}\" -d '{\"query\": \"{ __typename }\"}'"
     else
