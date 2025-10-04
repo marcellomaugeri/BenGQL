@@ -3,7 +3,6 @@ services:
     platform: linux/amd64
     image: postgres:16.1-alpine
     command: ["postgres", "-c", "log_statement=all"]
-    container_name: petclinic_graphql_db
     environment:
       - POSTGRES_PASSWORD=secretpw
       - POSTGRES_USER=klaus

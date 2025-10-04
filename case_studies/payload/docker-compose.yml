@@ -2,7 +2,6 @@ services:
   mongo:
     platform: linux/amd64
     image: mongo:7.0.20
-    container_name: mongodb
   payload:
     platform: linux/amd64
     build:
