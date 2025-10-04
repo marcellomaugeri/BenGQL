@@ -41,8 +41,9 @@ RUN pip install -r requirements.txt
 - [ ] All services in `docker-compose.yml` are fixed to platform `linux/amd64` to ensure compatibility with the testing environment (Works on both Intel and Apple Silicon Macs).
 - [ ] The `Dockerfile` uses a lightweight base image (e.g., `python:3.12-alpine` for Python projects or `node:18-slim` for Node.js projects).
 - [ ] The `docker-compose.yml` file defines a healthcheck for the service which checks for the GraphQL endpoint to be running, not the overall service, as we are interested in the GraphQL API availability.
-- [ ] The `docker-compose.yml` file does not specify a host port, allowing the case study to run on any port, enabling parallel experiment execution.
+- [ ] The `docker-compose.yml` file does not specify a fixed host port, allowing the case study to run on any port, enabling parallel experiment execution.
 - [ ] The `docker-compose.yml` file uses the `<case_study_name>` as the image name and service name.
+- [ ] The `docker-compose.yml` file does not specify `container_name`, allowing Docker to manage container names automatically.
 - [ ] The `docker-compose.yml` file is placed in the root of the case study folder.
 - [ ] The `Dockerfile`, when present, is placed in the root of the case study folder.
 - [ ] The `docker-compose.yml` file is named exactly as `docker-compose.yml`.
