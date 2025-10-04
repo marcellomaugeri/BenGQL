@@ -39,6 +39,15 @@ ENV NEO4J_dbms_unmanagedExtensionClasses=eu.ehri.project.ws=/ehri
 # Copy the output of mvn package to the Neo4j plugin folder...
 COPY --from=builder /ehri-rest/build/target/ehri-data*.jar plugins
 
+# Create an application.conf in the Neo4j conf directory
+COPY --from=builder /ehri-rest/ehri-ws-graphql/src/main/resources/reference.conf $NEO4J_HOME/conf/application.conf
+
+# Change the maxComplexityAnonymous: 50 to maxComplexityAnonymous: 200 in the application.conf
+RUN sed -i 's/maxComplexityAnonymous: 50/maxComplexityAnonymous: 160/' $NEO4J_HOME/conf/application.conf
+# Change the maxDepth: 15 and maxDepthAnonymous: 15 to maxDepth: 50 and maxDepthAnonymous: 50 in the application.conf just to be sure the introspection query will succeed
+RUN sed -i 's/maxDepth: 15/maxDepth: 50/' $NEO4J_HOME/conf/application.conf
+RUN sed -i 's/maxDepthAnonymous: 15/maxDepthAnonymous: 50/' $NEO4J_HOME/conf/application.conf
+
 # Initialise the database on container start...
 COPY --from=builder /ehri-rest/scripts/lib.sh /ehri-rest/scripts/cmd /ehri-rest/scripts/initdb.sh $NEO4J_HOME/scripts/
 ENV EXTENSION_SCRIPT=$NEO4J_HOME/scripts/initdb.sh

@@ -9,7 +9,7 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-X", "POST", "http://localhost:7474/ehri/graphql",
         "-H", "Content-Type: application/json",
-        "-d", "'{\"query\":\"{ Repository(id: \\\"us-005578\\\") { name } }\"}'"]
+        "-d", "'{\"query\":\"{ Repository(id: \\\"us-005578\\\") { id } }\"}'"]
       interval: 30s
       start_period: 10m
       timeout: 10s
