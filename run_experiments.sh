@@ -171,14 +171,30 @@ run_single_test() {
 
     log "[$test_id] Attempting to get exposed host port for service '$case_study_name' in project '$case_study_project_name'."
 
-    # Get port mapping(s) for the service.
-    case_study_port=$(docker ps --filter "label=com.docker.compose.project=$case_study_project_name" --filter "label=com.docker.compose.service=$case_study_name" --format "{{.Ports}}" 2>/dev/null | awk -F, '{print $1}' | sed -E 's/.*:([0-9]+)->.*/\1/')
+    raw_ports=$(docker ps \
+    --filter "label=com.docker.compose.project=$case_study_project_name" \
+    --filter "label=com.docker.compose.service=$case_study_name" \
+    --format "{{.Ports}}" 2>/dev/null)
 
+    # Extract first IPv4 published host port: lines like 0.0.0.0:32997->7474/tcp (ignore '[::]:...')
+    case_study_port=$(echo "$raw_ports" \
+    | tr ',' '\n' \
+    | sed 's/^[[:space:]]*//' \
+    | grep -F -- '->' \
+    | grep -E -- '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+->' \
+    | head -n1 \
+    | sed -E 's/^[0-9.]+:([0-9]+)->.*/\1/')
+
+    # Explanation:
+    # tr ',' '\n' -> Split by comma into multiple lines
+    # sed 's/^[[:space:]]*/' -> Remove leading spaces
+    # grep -F -- '->' -> Keep only lines with '->' (published ports)
+    # grep -E -- '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+->' -> Keep only lines with IPv4 addresses
+    # head -n1 -> Take the first matching line
+    # sed -E 's/^[0-9.]+:([0-9]+)->.*/\1/' -> Extract the published host port
 
     if [ -z "$case_study_port" ] || ! [[ "$case_study_port" =~ ^[0-9]+$ ]]; then
-        # If the pipeline failed (e.g., 'docker compose port' gave no output, or awk failed to parse),
-        # case_study_port will be empty or non-numeric.
-        log "[$test_id] ERROR: Failed to get or parse a valid host port for service '$case_study_name'. Parsed value: '$case_study_port'."
+        log "[$test_id] ERROR: Could not resolve an IPv4 published host port. Raw Ports: '$raw_ports'"
         echo "❌ (Case Study: Port Error)" > "$result_file"
         (cd "$case_study_dir" && docker compose -p "$case_study_project_name" down -v --remove-orphans &>/dev/null) || true
         return 1
