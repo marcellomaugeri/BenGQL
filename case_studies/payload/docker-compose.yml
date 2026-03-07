@@ -13,7 +13,7 @@ services:
     ports:
       - ":3000"
     environment:
-      - DATABASE_URI=mongodb://mongodb/db
+      - DATABASE_URI=mongodb://mongo/db
       - PAYLOAD_SECRET=SECRET
       - NEXT_PUBLIC_SERVER_URL=http://localhost:3000
       - CRON_SECRET=CRON_SECRET
