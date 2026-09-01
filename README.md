@@ -27,7 +27,7 @@ Contributions to this repository are welcome, and we encourage users to add new 
 | [fruits-api](https://github.com/Franqsanz/fruits-api) | Apollo | ✅ |
 | [gatsby-starter-default](https://github.com/gatsbyjs/gatsby) | graphql-js | ✅ |
 | [gitlab-ce](https://docs.gitlab.com/install/docker/) | GraphQL Ruby | ✅ |
-| [hey](https://github.com/heyverse/hey) | graphql-codegen | ✅ |
+| [hey](https://github.com/heyverse/hey) | graphql-codegen | ❌* |
 | [parse-server](https://github.com/parse-community/parse-server) | Apollo | ✅ |
 | [payload](https://github.com/payloadcms/payload) | graphql-js | ✅ |
 | [petclinic-graphql](https://github.com/spring-petclinic/spring-petclinic-graphql) | Spring for GraphQL | ✅ |
@@ -40,6 +40,8 @@ Contributions to this repository are welcome, and we encourage users to add new 
 | [sierra](https://github.com/hivdb/sierra) | GraphQL Java | ✅ |
 | [timbuctoo](https://github.com/HuygensING/timbuctoo) | GraphQL-Java | ✅ |
 | [twenty](https://github.com/twentyhq/twenty/) | nestjs/apollo | ✅ |
+
+\* **Discontinued:** Hey is built on the blockchain-based Lens Protocol and depends on supporting off-chain infrastructure. The corresponding backend [has not been open-sourced](https://orb.club/p/3f9y785s5eyckawhy30).
 
 ## Tools
 | Tool | Description | Integration status |
