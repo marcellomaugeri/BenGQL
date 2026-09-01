@@ -1,24 +1,17 @@
 services: 
   db:
     platform: linux/amd64
-    image: postgres:12
+    image: postgres:16
     restart: always
     environment:
       POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "password"
-      POSTGRES_DB: "amplication"
-      ALLOW_NOSSL: true
-    command: >
-      bash -c "
-        until pg_isready -U postgres; do
-          echo 'waiting for postgres…';
-          sleep 1;
-        done;
-        psql -U postgres -d amplication -c \"CREATE DATABASE \\\"default\\\" WITH OWNER postgres;\";
-        psql -U postgres -d amplication -c \"CREATE DATABASE \\\"test\\\"    WITH OWNER postgres;\";
-        exec postgres
-      "
-      
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "default"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   redis:
     platform: linux/amd64
@@ -30,14 +23,22 @@ services:
     image: twenty
     build:
       dockerfile: ./Dockerfile
+    environment:
+      NODE_PORT: 3000
+      ENCRYPTION_KEY: krakql-twenty-case-study-key
+      PG_DATABASE_URL: postgres://postgres:postgres@db:5432/default
+      REDIS_URL: redis://redis:6379
+      SERVER_URL: http://localhost:3000
+      STORAGE_TYPE: local
     depends_on:
       db:
-        condition: service_started
+        condition: service_healthy
       redis:
         condition: service_started
     healthcheck:
-      test: ["CMD", "curl", "-X", "POST", "http://localhost:3000/graphql",
+      test: ["CMD", "curl", "-fsS", "-X", "POST", "http://localhost:3000/graphql",
         "-H", "Content-Type: application/json",
-        "-d", "'{\"query\":\"{ continent(code: \\\"EU\\\") { code } }\"}'"]
+        "-d", "{\"query\":\"{ __typename }\"}"]
+      start_period: 10m
     ports:
       - ":3000"
