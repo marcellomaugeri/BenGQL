@@ -10,10 +10,10 @@ services:
     command: sh -c "npm run start"
     healthcheck:
       test: [
-        "CMD", "curl", "-X", "POST", "http://localhost:9000/graphql",
+        "CMD", "curl", "-f", "-X", "POST", "http://localhost:9000/graphql",
         "-H", "content-type: application/json",
-        "--data-raw", "{\"operationName\":null,\"variables\":{},\"query\":\"{ allFruits { Fruits { scientific_name } } }\"}"
+        "--data-raw", "{\"query\":\"{ __typename }\"}"
       ]
       interval: 30s
-      start_period: 10s
+      start_period: 3m
       timeout: 10s
