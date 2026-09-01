@@ -7,13 +7,13 @@ services:
       context: .
       dockerfile: Dockerfile
     healthcheck:
-      test: ["CMD", "curl", "-X", "POST", "http://localhost:8000/graphql",
+      test: ["CMD", "curl", "-fsS", "-X", "POST", "http://localhost:8000/graphql/",
         "-H", "Content-Type: application/json",
-        "-d", "'{\"query\":\"{ me { id } }\"}'"]
-      interval: 1m
+        "-d", "{\"query\":\"{ __typename }\"}"]
+      interval: 5m
       start_period: 25m
       timeout: 20s
-      retries: 5
+      retries: 10
     ports:
       - ":8000"
     restart: unless-stopped
