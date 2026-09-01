@@ -31,8 +31,8 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl -s -f -X POST http://localhost:8000/graphql \
         -H 'Content-Type: application/json' \
-        -d '{\"query\":\"{ reactions { totalCount } }\"}' > /dev/null"]
+        -d '{\"query\":\"{ __typename }\"}' > /dev/null"]
       interval: 30s
       start_period: 5m
-      timeout: 10s
+      timeout: 2m
       retries: 3

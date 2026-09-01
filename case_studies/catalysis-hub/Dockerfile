@@ -6,8 +6,11 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Clone the repo and checkout the specific commit
-RUN git clone https://github.com/SUNCAT-Center/CatalysisHubBackend.git
+# The original repository is unavailable; use an unofficial mirror.
+# RUN git clone https://github.com/SUNCAT-Center/CatalysisHubBackend.git
+RUN git clone https://github.com/mhoffman/CatalysisHubBackend.git
 WORKDIR /CatalysisHubBackend
+RUN git fetch origin 5d46106d28fd80049e925db082cdabdfc48e5e05
 RUN git checkout 5d46106d28fd80049e925db082cdabdfc48e5e05
 
 # Install Python dependencies
