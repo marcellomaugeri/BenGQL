@@ -7,11 +7,11 @@ services:
     build:
       dockerfile: ./Dockerfile
     healthcheck:
-      test: ["CMD", "curl", "-X", "POST", "http://localhost:3000/graphql",
+      test: ["CMD", "curl", "-fsS", "-X", "POST", "http://localhost:10102/graphql",
         "-H", "Content-Type: application/json",
-        "-d", "'{\"query\":\"{ continent(code: \\\"EU\\\") { code } }\"}'"]
+        "-d", "{\"query\":\"{ __typename }\"}"]
     ports:
-      - ":3000"
+      - ":10102"
    
     environment:
       - NODE_ENV=development
