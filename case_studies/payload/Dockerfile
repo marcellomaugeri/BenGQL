@@ -12,7 +12,7 @@ RUN git checkout 1b31c74d32b98b75306512728563241141ff0a16
 #RUN rm -rf /payload
 WORKDIR /payload/templates/website/
 # Install dependencies and setup
-RUN npm install -g pnpm
+RUN npm install -g pnpm@9.7.1
 RUN pnpm install
 
 # Run the server in development mode
