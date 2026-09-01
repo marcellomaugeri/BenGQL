@@ -1,4 +1,13 @@
 services:
+  mongo:
+    platform: linux/amd64
+    image: mongo:7.0.20
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   parse-server:
     platform: linux/amd64
     build:
@@ -12,18 +21,21 @@ services:
       PARSE_SERVER_DATABASE_URI: mongodb://mongo:27017/dev
       PARSE_SERVER_URL: http://localhost:1337/parse
     command: >
-      --appId $$PARSE_SERVER_APPLICATION_ID
-      --masterKey $$PARSE_SERVER_MASTER_KEY
-      --databaseURI $$PARSE_SERVER_DATABASE_URI
+      --appId myAppId
+      --masterKey myMasterKey
+      --databaseURI mongodb://mongo:27017/dev
       --mountGraphQL
       --mountPlayground
+    depends_on:
+      mongo:
+        condition: service_healthy
 
     healthcheck:
       test: ["CMD-SHELL",
          "curl -f -X POST http://localhost:1337/graphql \
            -H 'Content-Type: application/json' \
            -H 'X-Parse-Application-Id: myAppId' \
-           -d '{\"query\":\"{ __schema { queryType { name } } }\"}' \
+           -d '{\"query\":\"{ __typename }\"}' \
            || exit 1"
       ]
       interval: 10s
