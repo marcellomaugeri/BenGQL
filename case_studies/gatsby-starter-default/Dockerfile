@@ -1,6 +1,6 @@
 FROM node:18
 
-RUN apt-get update && apt-get install -y git build-essential python3
+RUN apt-get update && apt-get install -y curl git build-essential python3
 
 # Install Gatsby CLI globally
 RUN npm install -g gatsby-cli@5.14.0
@@ -17,14 +17,8 @@ RUN gatsby new my-gatsby-site ./gatsby-starter-default
 # Change working directory into the newly created project
 WORKDIR /my-gatsby-site
 
-# Install dependencies for the new project
-RUN npm install
-
-# Build the gatsby application, setting NODE_OPTIONS for more memory
-RUN gatsby build
-
 # Expose the port the app runs on.
 EXPOSE 9000
 
 # Command to run the app.
-CMD ["gatsby", "serve", "--host", "0.0.0.0", "--port", "9000"]
+CMD ["gatsby", "develop", "--host", "0.0.0.0", "--port", "9000"]

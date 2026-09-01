@@ -10,10 +10,10 @@ services:
     ports:
       - ":9000"
     healthcheck:
-      test: ["CMD", "curl", "-X", "POST", "http://localhost:9000/___graphql",
+      test: ["CMD", "curl", "-fsS", "-X", "POST", "http://localhost:9000/___graphql",
         "-H", "Content-Type: application/json",
-        "-d", "'{\"query\":\"{ continent(code: \\\"EU\\\") { code } }\"}'"]
+        "-d", "{\"query\":\"{ __typename }\"}"]
       interval: 30s
-      start_period: 1m
+      start_period: 6m
       timeout: 10s
       retries: 3
