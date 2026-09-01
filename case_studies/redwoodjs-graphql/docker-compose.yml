@@ -5,9 +5,9 @@ services:
     build:
       dockerfile: ./Dockerfile
     healthcheck:
-      test: ["CMD", "curl", "-X", "POST", "http://localhost:8910/graphql",
+      test: ["CMD", "curl", "-f", "-X", "POST", "http://127.0.0.1:8911/graphql",
         "-H", "Content-Type: application/json",
-        "-d", "'{\"query\":\"{ continent(code: \\\"EU\\\") { code } }\"}'"]
+        "-d", "{\"query\":\"{ __typename }\"}"]
       interval: 30s
       start_period: 1m
       timeout: 10s
