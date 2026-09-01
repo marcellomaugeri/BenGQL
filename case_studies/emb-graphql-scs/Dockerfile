@@ -1,6 +1,8 @@
 FROM maven:3.9.10-eclipse-temurin-8-alpine
 
-RUN apk add --no-cache git
+ENV MAVEN_OPTS="-Dhttps.protocols=TLSv1.2"
+
+RUN apk add --no-cache curl git
 
 RUN git clone https://github.com/WebFuzzing/EMB.git
 WORKDIR /EMB
