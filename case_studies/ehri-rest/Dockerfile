@@ -1,6 +1,8 @@
 # Builder
 FROM maven:3.9.10-eclipse-temurin-8-alpine AS builder
 
+ENV MAVEN_OPTS="-Dhttps.protocols=TLSv1.2"
+
 RUN apk add --no-cache git
 
 # Clone the repo and checkout the specific commit
