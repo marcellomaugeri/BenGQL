@@ -62,10 +62,10 @@ services:
       kafka:
         condition: service_healthy
     ports:
-      - ":3001"
+      - ":3000"
     environment:
       NODE_ENV: development
-      DATABASE_URL: "postgres://postgres:password@db:5432/amplication"
+      POSTGRESQL_URL: "postgresql://postgres:password@db:5432/amplication"
       REDIS_URL: "redis://redis:6379"
       SENDGRID_API_KEY_SECRET: "dummy"
       SEGMENT_WRITE_KEY_SECRET: "dummy"
@@ -74,12 +74,11 @@ services:
       KAFKA_BROKERS: "kafka:29092"
       #PORT: 3000
     healthcheck:
-      test: ["CMD-SHELL", "curl -f -X POST http://localhost:3001/graphql \
+      test: ["CMD-SHELL", "curl -f -X POST http://localhost:3000/graphql \
                -H 'Content-Type: application/json' \
                -d '{\"query\":\"{ __schema { queryType { name } } }\"}' \
                || exit 1"]
       interval: 30s
       timeout: 30s
-      start_period: 2m
+      start_period: 5m
       retries: 5
-
