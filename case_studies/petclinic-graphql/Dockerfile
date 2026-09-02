@@ -21,6 +21,8 @@ ENV MAVEN_CONFIG=""
 RUN chmod +x mvnw
 RUN ./mvnw -X -DskipTests -pl backend package
 
+COPY auth.sh /usr/local/share/petclinic-auth.sh
+
 # Remove entrypoint
 ENTRYPOINT [ "" ]
 
