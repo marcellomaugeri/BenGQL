@@ -81,5 +81,6 @@ The command below runs an experiment named `my_experiment` with the `EvoMaster` 
 ## Known Issues
 - The `countries` case study on MacOS (ARM) sometimes fails to compile (qemu: uncaught target signal 11 (Segmentation fault) - core dumped). If this happens, just try to compile the container again and will work like a charm.
 - The `ehri-rest` case study sometimes fails to start due to getting stuck during the initialisation (A successful run should show twice the following in the log: `SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".`). If this happens, please restart.
+- The `sierra` case study sometimes fails to start when emulated on ARM Macs. If this happens, please restart.
 - Docker networks can be filled with unused containers, which can cause issues with the `docker-compose up` command. If you encounter issues, try running `docker network prune` to clean up unused networks.
 - The `saleor` case study is extremely slow to start (around 30 minutes). Future versions could address this by optimising the startup process, maybe by prepopulating the database or remove optional services from the `docker-compose.yml` file.
